@@ -3,19 +3,19 @@
 }
 
 * {
-    -primary: #015AD9;
-    -primary-light: #CEE6FF;
-    -primary-dark: #00377C;
+    -wa-primary: #015AD9;
+    -wa-primary-light: #CEE6FF;
+    -wa-primary-dark: #00377C;
 
-    -gray-darker: rgba(26,26,26,1);
-    -gray-dark: rgba(26,26,26,0.8);
-    -gray: rgba(26,26,26,0.6);
-    -gray-light: rgba(26,26,26,0.4);
-    -gray-lighter: rgba(26,26,26,0.1);
+    -wa-gray-darker: rgba(26,26,26,1);
+    -wa-gray-dark: rgba(26,26,26,0.8);
+    -wa-gray: rgba(26,26,26,0.6);
+    -wa-gray-light: rgba(26,26,26,0.4);
+    -wa-gray-lighter: rgba(26,26,26,0.1);
 
-    -white: #FFF;
+    -wa-white: #FFF;
 
-    -shadow0: dropshadow(gaussian, rgba(0, 0, 0, 0.0), 0, 0, 0, 0);
-    -shadow1: dropshadow(gaussian, rgba(0, 0, 0, 0.24), 2, 0, 0, 1);
-    -shadow2: dropshadow(gaussian, rgba(0,0,0,0.23), 6, 0, 0, 3);
+    -wa-shadow0: dropshadow(gaussian, rgba(0, 0, 0, 0.0), 0, 0, 0, 0);
+    -wa-shadow1: dropshadow(gaussian, rgba(0, 0, 0, 0.24), 2, 0, 0, 1);
+    -wa-shadow2: dropshadow(gaussian, rgba(0,0,0,0.23), 6, 0, 0, 3);
 }
