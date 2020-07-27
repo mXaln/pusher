@@ -1,0 +1,3 @@
+rootProject.name = 'MAUI'
+
+include ':common', ':jvm'

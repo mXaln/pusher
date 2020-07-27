@@ -1,0 +1,60 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version "$javafxPluginVer"
+    id 'com.github.johnrengelman.shadow' version "$shadowPluginVer"
+}
+
+apply plugin: 'application'
+apply plugin: 'idea'
+
+javafx {
+    version = '11'
+    modules = ['javafx.controls']
+}
+
+version = 1.0
+
+repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://jitpack.io' }
+}
+
+application {
+    mainClassName = "org.bibletranslationtools.jvm.MainKt"
+}
+
+dependencies {
+    // TornadoFX
+    implementation "no.tornado:tornadofx:$tornadofxVer"
+
+    // JFoenix
+    implementation "com.jfoenix:jfoenix:$jfoenixVer"
+
+    // OpenJFX cross-platform fat jar dependencies
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:mac"
+
+    // Ikonli
+    implementation "org.kordamp.ikonli:ikonli-javafx:$ikonliVer"
+    implementation "org.kordamp.ikonli:ikonli-material-pack:$ikonliVer"
+
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlinVer"
+    implementation "com.github.thomasnield:rxkotlinfx:$rxkotlinfxVer"
+
+    implementation project(':common')
+
+    // Testing
+    testImplementation "junit:junit:$junitVer"
+}
+
+// tell gradle what to put in the jar
+shadowJar {
+    archiveFileName = "${rootProject.name}.jar"
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': "org.bibletranslationtools.jvm.MainKt"
+        )
+    }
+}
