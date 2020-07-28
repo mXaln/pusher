@@ -9,6 +9,7 @@ data class FileData(
     var language: String? = null,
     var resourceType: ResourceType? = null,
     var book: String? = null,
+    var chapter: Int? = null,
     var mediaExtension: MediaExtension? = null,
     var mediaQuality: MediaQuality? = null,
     var grouping: Grouping? = null
