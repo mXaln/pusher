@@ -76,7 +76,7 @@ class ParseFileName(private val file: File) {
 
     private fun findLanguage(): String? {
         return matcher?.let { _matcher ->
-            _matcher.group(GROUPS.LANGUAGE.value)
+            _matcher.group(GROUPS.LANGUAGE.value)?.toLowerCase()
         }
     }
 
@@ -91,7 +91,7 @@ class ParseFileName(private val file: File) {
 
     private fun findBook(): String? {
         return matcher?.let { _matcher ->
-            _matcher.group(GROUPS.BOOK_SLUG.value)
+            _matcher.group(GROUPS.BOOK_SLUG.value)?.toLowerCase()
         }
     }
 
