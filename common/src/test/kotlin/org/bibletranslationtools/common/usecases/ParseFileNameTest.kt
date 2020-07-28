@@ -7,6 +7,7 @@ import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
 import org.junit.Test
 import java.io.File
+import java.lang.IllegalArgumentException
 
 class ParseFileNameTest {
 
@@ -14,6 +15,7 @@ class ParseFileNameTest {
     private val file2 = File("test.wav")
     private val file3 = File("en_ulb_gen_c02_chunk.tr")
     private val file4 = File("en_ulb_gen_low_verse.mp3")
+    private val file5 = File("en_udb_gen.tr")
 
     private val fileData1 = FileData(
         file1,
@@ -54,6 +56,7 @@ class ParseFileNameTest {
     private val parser2 = ParseFileName(file2)
     private val parser3 = ParseFileName(file3)
     private val parser4 = ParseFileName(file4)
+    private val parser5 = ParseFileName(file5)
 
     private val subscriber = TestSubscriber<FileData>()
 
@@ -123,5 +126,14 @@ class ParseFileNameTest {
         subscriber.assertValue {
             it.mediaQuality == fileData4.mediaQuality
         }
+    }
+
+    @Test
+    fun unsupportedResourceTypeThrowsException() {
+        val result = parser5.parse().toFlowable()
+        result.subscribe(subscriber)
+
+        subscriber.assertError(IllegalArgumentException::class.java)
+        subscriber.assertNotComplete()
     }
 }
