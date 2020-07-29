@@ -25,16 +25,16 @@ class ParseFileName(private val file: File) {
     }
 
     companion object {
-        private const val LANGUAGE = "([a-zA-Z]{2,3}[-\\w+]*?)"
+        private const val LANGUAGE = "([a-zA-Z]{2,3}[-a-zA-Z]*?)"
         private const val RESOURCE_TYPE = "(?:_([a-zA-Z]{3}))"
         private const val BOOK_NUMBER = "(?:_b([\\d]{2}))?"
-        private const val BOOK = "(?:_([1-3]{0,1}[a-zA-Z]{2,3}))"
+        private const val BOOK = "(?:_([1-3]{0,1}[a-zA-Z]{2,3}))??"
         private const val CHAPTER = "(?:_c([\\d]{1,3}))?"
         private const val VERSE = "(?:_v([\\d]{1,3})(?:-([\\d]{1,3}))?)?"
         private const val TAKE = "(?:_t([\\d]{1,2}))?"
         private const val QUALITY = "(?:_(hi|low))?"
         private const val GROUPING = "(?:_(book|chapter|chunk|verse))?"
-        private const val FILENAME_PATTERN = LANGUAGE +
+        private const val FILENAME_PATTERN = "^" + LANGUAGE +
                 RESOURCE_TYPE +
                 BOOK_NUMBER +
                 BOOK +
@@ -42,7 +42,7 @@ class ParseFileName(private val file: File) {
                 VERSE +
                 TAKE +
                 QUALITY +
-                GROUPING
+                GROUPING + "$"
 
     }
 

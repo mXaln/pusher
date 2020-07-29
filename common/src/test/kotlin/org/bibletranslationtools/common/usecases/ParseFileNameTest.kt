@@ -17,6 +17,7 @@ class ParseFileNameTest {
     private val file4 = File("en_ulb_gen_c02_chunk.tr")
     private val file5 = File("en_ulb_gen_low_verse.mp3")
     private val file6 = File("en_udb_gen.tr")
+    private val file7 = File("en_ulb.wav")
 
     private val fileData1 = FileData(
         file1,
@@ -64,12 +65,19 @@ class ParseFileNameTest {
         Grouping.VERSE
     )
 
+    private val fileData7 = FileData(
+        file7,
+        "en",
+        ResourceType.ULB
+    )
+
     private val parser1 = ParseFileName(file1)
     private val parser2 = ParseFileName(file2)
     private val parser3 = ParseFileName(file3)
     private val parser4 = ParseFileName(file4)
     private val parser5 = ParseFileName(file5)
     private val parser6 = ParseFileName(file6)
+    private val parser7 = ParseFileName(file7)
 
     private val subscriber = TestSubscriber<FileData>()
 
@@ -158,5 +166,15 @@ class ParseFileNameTest {
 
         subscriber.assertError(IllegalArgumentException::class.java)
         subscriber.assertNotComplete()
+    }
+
+    @Test
+    fun parseFileNameLanguageResourceOnly() {
+        val result = parser7.parse().toFlowable()
+        result.subscribe(subscriber)
+
+        subscriber.assertComplete()
+        subscriber.assertNoErrors()
+        subscriber.assertValue(fileData7)
     }
 }
