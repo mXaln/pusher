@@ -13,4 +13,8 @@ enum class MediaExtension(vararg val ext: String) {
                 it.name == ext.toUpperCase() || it.ext.any { _ext -> _ext == ext }
             } ?: throw IllegalArgumentException("There is no media extension $ext")
     }
+
+    override fun toString(): String {
+        return ext.first()
+    }
 }
