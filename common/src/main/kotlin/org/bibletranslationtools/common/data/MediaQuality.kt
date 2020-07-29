@@ -12,4 +12,8 @@ enum class MediaQuality(val quality: String) {
                 it.name == quality.toUpperCase() || it.quality == quality
             } ?: throw IllegalArgumentException("There is no quality $quality")
     }
+
+    override fun toString(): String {
+        return quality
+    }
 }

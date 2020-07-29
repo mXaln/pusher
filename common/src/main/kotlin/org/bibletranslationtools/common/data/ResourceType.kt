@@ -11,4 +11,8 @@ enum class ResourceType(val slug: String) {
                 it.name == slug.toUpperCase() || it.slug == slug
             } ?: throw IllegalArgumentException("There is no resource type $slug")
     }
+
+    override fun toString(): String {
+        return slug
+    }
 }
