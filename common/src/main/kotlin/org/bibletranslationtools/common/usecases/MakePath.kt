@@ -74,6 +74,9 @@ class MakePath(private val fileData: FileData) {
             fileData.resourceType == null -> {
                 throw IllegalArgumentException("Resource type should be specified")
             }
+            fileData.chapter != null && fileData.book == null -> {
+                throw IllegalArgumentException("Book needs to be specified")
+            }
             fileData.grouping == null -> {
                 throw IllegalArgumentException("Grouping needs to be specified")
             }

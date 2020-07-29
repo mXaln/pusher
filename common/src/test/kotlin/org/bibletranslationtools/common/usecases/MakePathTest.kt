@@ -136,4 +136,24 @@ class MakePathTest {
         subscriber.assertError(IllegalArgumentException::class.java)
         subscriber.assertNotComplete()
     }
+
+    @Test
+    fun testCompressedMediaWithoutQualityThrowsException() {
+        val fileData = FileData(
+            File("en_ulb_gen.mp3"),
+            "en",
+            ResourceType.ULB,
+            "gen",
+            null,
+            null,
+            null,
+            Grouping.CHAPTER
+        )
+
+        val result = MakePath(fileData).build().toFlowable()
+        result.subscribe(subscriber)
+
+        subscriber.assertError(IllegalArgumentException::class.java)
+        subscriber.assertNotComplete()
+    }
 }
