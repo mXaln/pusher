@@ -26,6 +26,7 @@ class ParseFileName(private val file: File) {
 
     companion object {
         private const val LANGUAGE = "([a-zA-Z]{2,3}[-a-zA-Z]*?)"
+        private const val ANTHOLOGY = "(?:_(?:nt|ot))?"
         private const val RESOURCE_TYPE = "(?:_([a-zA-Z]{3}))"
         private const val BOOK_NUMBER = "(?:_b([\\d]{2}))?"
         private const val BOOK = "(?:_([1-3]{0,1}[a-zA-Z]{2,3}))??"
@@ -35,6 +36,7 @@ class ParseFileName(private val file: File) {
         private const val QUALITY = "(?:_(hi|low))?"
         private const val GROUPING = "(?:_(book|chapter|chunk|verse))?"
         private const val FILENAME_PATTERN = "^" + LANGUAGE +
+                ANTHOLOGY +
                 RESOURCE_TYPE +
                 BOOK_NUMBER +
                 BOOK +

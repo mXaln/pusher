@@ -11,7 +11,7 @@ import java.lang.IllegalArgumentException
 
 class ParseFileNameTest {
 
-    private val file1 = File("en_ulb_b01_gen_c01_v01_t01.wav")
+    private val file1 = File("en_ot_ulb_b01_gen_c01_v01_t01.wav")
     private val file2 = File("EN_ULB_B01_GEN_C01_V01_T01.wav")
     private val file3 = File("test.wav")
     private val file4 = File("en_ulb_gen_c02_chunk.tr")
