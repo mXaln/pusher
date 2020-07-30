@@ -1,17 +1,13 @@
 package org.bibletranslationtools.common.usecases
 
-import io.reactivex.subscribers.TestSubscriber
 import org.bibletranslationtools.common.data.FileData
 import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
 import org.junit.Test
 import java.io.File
-import java.lang.IllegalArgumentException
 
 class ParseFileNameTest {
-
-    private val subscriber = TestSubscriber<FileData>()
 
     @Test
     fun parseFileNameWithValidInfo() {
@@ -26,24 +22,22 @@ class ParseFileNameTest {
             null,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
     }
 
     @Test
     fun parseFileNameWithInvalidInfo() {
         val file = File("test.wav")
         val expected = FileData(file)
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
     }
 
     @Test
@@ -59,12 +53,11 @@ class ParseFileNameTest {
             null,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
     }
 
     @Test
@@ -80,12 +73,11 @@ class ParseFileNameTest {
             null,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue {
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue {
             it.language == expected.language
         }
     }
@@ -94,12 +86,11 @@ class ParseFileNameTest {
     fun fileDataLanguageNullWithInvalidFileName() {
         val file = File("test.wav")
         val expected = FileData(file)
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue {
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue {
             it.language == expected.language
         }
     }
@@ -117,12 +108,11 @@ class ParseFileNameTest {
             null,
             Grouping.CHUNK
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue {
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue {
             it.grouping == expected.grouping
         }
     }
@@ -140,12 +130,11 @@ class ParseFileNameTest {
             MediaQuality.LOW,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue {
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue {
             it.mediaQuality == expected.mediaQuality
         }
     }
@@ -153,11 +142,10 @@ class ParseFileNameTest {
     @Test
     fun unsupportedResourceTypeThrowsException() {
         val file = File("en_udb_gen.tr")
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertError(IllegalArgumentException::class.java)
-        subscriber.assertNotComplete()
+        result.assertError(IllegalArgumentException::class.java)
+        result.assertNotComplete()
     }
 
     @Test
@@ -168,11 +156,10 @@ class ParseFileNameTest {
             "en",
             ResourceType.ULB
         )
-        val result = ParseFileName(file).parse().toFlowable()
-        result.subscribe(subscriber)
+        val result = ParseFileName(file).parse().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(fileData)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(fileData)
     }
 }
