@@ -14,4 +14,8 @@ enum class Grouping(val grouping: String) {
                 it.name == grouping.toUpperCase() || it.grouping == grouping
             } ?: throw IllegalArgumentException("There is no grouping $grouping")
     }
+
+    override fun toString(): String {
+        return grouping
+    }
 }
