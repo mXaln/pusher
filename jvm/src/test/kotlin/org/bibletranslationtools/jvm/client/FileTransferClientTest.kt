@@ -9,6 +9,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.File
+import java.lang.IllegalArgumentException
 
 class FileTransferClientTest {
 
@@ -52,5 +53,18 @@ class FileTransferClientTest {
         result.assertComplete()
         result.assertNoErrors()
         Assert.assertTrue(target.exists())
+    }
+
+    @Test
+    fun testSourceIsDirectoryThrowsException() {
+        val source = tempFolder.newFolder("en")
+        val target = File(tempFolder.root, "en/ulb/gen/CONTENTS/tr/wav/verse/en_ulb_gen_verse.tr")
+        val client = FileTransferClient(source, target)
+
+        val result = client.transfer().test()
+
+        result.assertNotComplete()
+        result.assertError(IllegalArgumentException::class.java)
+        result.assertErrorMessage("Source should not be a directory")
     }
 }
