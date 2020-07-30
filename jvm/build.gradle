@@ -46,6 +46,8 @@ dependencies {
 
     // Testing
     testImplementation "junit:junit:$junitVer"
+    testImplementation "org.mockito:mockito-core:$mockitoVer"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVer"
 }
 
 // tell gradle what to put in the jar
