@@ -1,6 +1,5 @@
 package org.bibletranslationtools.common.usecases
 
-import io.reactivex.subscribers.TestSubscriber
 import org.bibletranslationtools.common.data.FileData
 import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
@@ -8,11 +7,8 @@ import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
 import org.junit.Test
 import java.io.File
-import java.lang.IllegalArgumentException
 
 class MakePathTest {
-
-    private val subscriber = TestSubscriber<String>()
 
     @Test
     fun testCompressedMedia() {
@@ -28,12 +24,11 @@ class MakePathTest {
             Grouping.VERSE
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
 
     }
 
@@ -51,12 +46,11 @@ class MakePathTest {
             Grouping.CHUNK
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
 
     }
 
@@ -74,12 +68,11 @@ class MakePathTest {
             Grouping.VERSE
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
     }
 
     @Test
@@ -96,12 +89,11 @@ class MakePathTest {
             Grouping.BOOK
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertComplete()
-        subscriber.assertNoErrors()
-        subscriber.assertValue(expected)
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
     }
 
     @Test
@@ -110,11 +102,10 @@ class MakePathTest {
             File("test.mp3")
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertError(IllegalArgumentException::class.java)
-        subscriber.assertNotComplete()
+        result.assertError(IllegalArgumentException::class.java)
+        result.assertNotComplete()
     }
 
     @Test
@@ -130,11 +121,10 @@ class MakePathTest {
             Grouping.CHAPTER
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertError(IllegalArgumentException::class.java)
-        subscriber.assertNotComplete()
+        result.assertError(IllegalArgumentException::class.java)
+        result.assertNotComplete()
     }
 
     @Test
@@ -150,10 +140,9 @@ class MakePathTest {
             Grouping.CHAPTER
         )
 
-        val result = MakePath(fileData).build().toFlowable()
-        result.subscribe(subscriber)
+        val result = MakePath(fileData).build().test()
 
-        subscriber.assertError(IllegalArgumentException::class.java)
-        subscriber.assertNotComplete()
+        result.assertError(IllegalArgumentException::class.java)
+        result.assertNotComplete()
     }
 }
