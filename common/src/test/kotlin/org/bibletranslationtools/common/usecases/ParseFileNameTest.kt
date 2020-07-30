@@ -145,6 +145,7 @@ class ParseFileNameTest {
         val result = ParseFileName(file).parse().test()
 
         result.assertError(IllegalArgumentException::class.java)
+        result.assertErrorMessage("There is no resource type udb")
         result.assertNotComplete()
     }
 
