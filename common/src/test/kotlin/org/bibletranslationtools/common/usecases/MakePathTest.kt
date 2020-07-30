@@ -124,6 +124,7 @@ class MakePathTest {
         val result = MakePath(fileData).build().test()
 
         result.assertError(IllegalArgumentException::class.java)
+        result.assertErrorMessage("Media extension cannot be applied to non-container media")
         result.assertNotComplete()
     }
 
@@ -143,6 +144,7 @@ class MakePathTest {
         val result = MakePath(fileData).build().test()
 
         result.assertError(IllegalArgumentException::class.java)
+        result.assertErrorMessage("Media quality needs to be specified for compressed media")
         result.assertNotComplete()
     }
 }
