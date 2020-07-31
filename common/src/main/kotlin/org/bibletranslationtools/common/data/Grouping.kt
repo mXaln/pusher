@@ -12,7 +12,7 @@ enum class Grouping(val grouping: String) {
         fun of(grouping: String) =
             values().singleOrNull {
                 it.name == grouping.toUpperCase() || it.grouping == grouping
-            } ?: throw IllegalArgumentException("There is no grouping $grouping")
+            } ?: throw IllegalArgumentException("Grouping $grouping is not supported")
     }
 
     override fun toString(): String {

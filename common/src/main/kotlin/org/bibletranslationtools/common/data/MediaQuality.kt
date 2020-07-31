@@ -10,7 +10,7 @@ enum class MediaQuality(val quality: String) {
         fun of(quality: String) =
             values().singleOrNull {
                 it.name == quality.toUpperCase() || it.quality == quality
-            } ?: throw IllegalArgumentException("There is no quality $quality")
+            } ?: throw IllegalArgumentException("Quality $quality is not supported")
     }
 
     override fun toString(): String {

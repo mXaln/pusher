@@ -1,7 +1,5 @@
 package org.bibletranslationtools.common.data
 
-import java.lang.IllegalArgumentException
-
 enum class MediaExtension(vararg val ext: String) {
     WAV("wav"),
     MP3("mp3"),
@@ -10,8 +8,8 @@ enum class MediaExtension(vararg val ext: String) {
     companion object {
         fun of(ext: String) =
             values().singleOrNull {
-                it.name == ext.toUpperCase() || it.ext.any { _ext -> _ext == ext }
-            } ?: throw IllegalArgumentException("There is no media extension $ext")
+                it.name == ext.toUpperCase() || it.ext.contains(ext)
+            } ?: throw IllegalArgumentException("Media extension $ext is not supported")
     }
 
     override fun toString(): String {

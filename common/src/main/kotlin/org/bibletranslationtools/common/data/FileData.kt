@@ -2,6 +2,7 @@ package org.bibletranslationtools.common.data
 
 import org.bibletranslationtools.common.extensions.CompressedExtensions
 import org.bibletranslationtools.common.extensions.ContainerExtensions
+import org.bibletranslationtools.common.extensions.MediaExtensions
 import java.io.File
 
 data class FileData(
@@ -14,17 +15,17 @@ data class FileData(
     var mediaQuality: MediaQuality? = null,
     var grouping: Grouping? = null
 ) {
-    var mediaExtensionAvailable: Boolean = true
-        get() = mediaExtensionAvailable()
+    val extension = MediaExtensions.of(file.extension)
 
-    var mediaQualityAvailable: Boolean = true
-        get() = mediaQualityAvailable()
+    val isContainer = ContainerExtensions.isSupported(extension.norm)
 
-    private fun mediaExtensionAvailable(): Boolean {
-        return ContainerExtensions.isValid(file.extension)
-    }
+    val isCompressed =
+        !isContainer && CompressedExtensions.isSupported(extension.norm)
 
-    private fun mediaQualityAvailable(): Boolean {
-        return mediaExtensionAvailable || CompressedExtensions.isValid(file.extension)
-    }
+    val isContainerAndCompressed =
+        isContainer && CompressedExtensions.isSupported(mediaExtension.toString())
+
+    var mediaExtensionAvailable = isContainer
+
+    var mediaQualityAvailable = isContainerAndCompressed || isCompressed
 }
