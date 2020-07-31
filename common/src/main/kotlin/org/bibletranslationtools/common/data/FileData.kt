@@ -25,7 +25,7 @@ data class FileData(
     val isContainerAndCompressed =
         isContainer && CompressedExtensions.isSupported(mediaExtension.toString())
 
-    var mediaExtensionAvailable = isContainer
+    val mediaExtensionAvailable = isContainer
 
-    var mediaQualityAvailable = isContainerAndCompressed || isCompressed
+    val mediaQualityAvailable = isContainerAndCompressed || isCompressed
 }
