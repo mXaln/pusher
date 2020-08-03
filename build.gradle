@@ -46,6 +46,7 @@ tasks.withType(io.gitlab.arturbosch.detekt.Detekt) {
 subprojects {
     repositories {
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 
     apply plugin: 'kotlin'
