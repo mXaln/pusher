@@ -123,8 +123,7 @@ class WavFileReader(private val file: File) {
             when (subchunkLabel) {
                 LIST_LABEL -> parseLabels(buffer)
                 CUE_LABEL -> parseCues(buffer)
-                else -> {
-                }
+                else -> Unit
             }
 
             // move on to the next chunk
