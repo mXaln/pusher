@@ -11,11 +11,11 @@ class CompressedExtensionsTest {
 
     @Test
     fun testValidCompressedExtension() {
-        Assert.assertTrue(CompressedExtensions.isValid(mp3File.extension))
+        Assert.assertTrue(CompressedExtensions.isSupported(mp3File.extension))
     }
 
     @Test
     fun testNotValidCompressedExtension() {
-        Assert.assertFalse(CompressedExtensions.isValid(wavFile.extension))
+        Assert.assertFalse(CompressedExtensions.isSupported(wavFile.extension))
     }
 }

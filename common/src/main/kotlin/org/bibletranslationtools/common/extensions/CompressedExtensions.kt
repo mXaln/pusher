@@ -4,10 +4,10 @@ enum class CompressedExtensions(vararg val ext: String) {
     MP3("mp3"),
     JPG("jpg", "jpeg");
 
-    companion object {
-        fun isValid(ext: String) =
+    companion object: SupportedExtensions {
+        override fun isSupported(ext: String) =
             values().any {
-                it.name == ext.toUpperCase() || it.ext.any { _ext -> _ext == ext }
+                it.name == ext.toUpperCase() || it.ext.contains(ext)
             }
     }
 }

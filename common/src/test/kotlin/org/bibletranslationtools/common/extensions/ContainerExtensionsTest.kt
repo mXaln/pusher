@@ -11,11 +11,11 @@ class ContainerExtensionsTest {
 
     @Test
     fun testValidContainerExtension() {
-        Assert.assertTrue(ContainerExtensions.isValid(trFile.extension))
+        Assert.assertTrue(ContainerExtensions.isSupported(trFile.extension))
     }
 
     @Test
     fun testNotValidContainerExtension() {
-        Assert.assertFalse(ContainerExtensions.isValid(wavFile.extension))
+        Assert.assertFalse(ContainerExtensions.isSupported(wavFile.extension))
     }
 }

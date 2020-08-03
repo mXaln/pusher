@@ -9,7 +9,7 @@ enum class ResourceType(val slug: String) {
         fun of(slug: String) =
             values().singleOrNull {
                 it.name == slug.toUpperCase() || it.slug == slug
-            } ?: throw IllegalArgumentException("There is no resource type $slug")
+            } ?: throw IllegalArgumentException("Resource type $slug is not supported")
     }
 
     override fun toString(): String {
