@@ -1,7 +1,6 @@
 package org.bibletranslationtools.jvm.io
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.reactivex.Single
@@ -10,13 +9,9 @@ import java.io.File
 
 class BooksReader : IBooksReader {
 
-    companion object {
-        const val CATALOG_SLUG_ID = "slug"
-    }
-
     @JsonIgnoreProperties(ignoreUnknown = true)
     private data class BookSchema(
-        @JsonProperty(CATALOG_SLUG_ID) val slug: String
+        val slug: String
     )
 
     override fun read(): Single<List<String>> {
