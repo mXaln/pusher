@@ -43,7 +43,7 @@ dependencies {
     implementation "com.github.thomasnield:rxkotlinfx:$rxkotlinfxVer"
 
     // Jackson
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonVer"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonDataFormat"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
 
     implementation project(':common')
