@@ -1,7 +1,7 @@
 package org.bibletranslationtools.common.validators
 
 import org.bibletranslationtools.common.audio.InvalidWavFileException
-import org.bibletranslationtools.common.audio.Metadata
+import org.bibletranslationtools.common.audio.BttrMetadata
 import org.bibletranslationtools.common.audio.WavFileReader
 import java.io.File
 
@@ -20,7 +20,7 @@ class WavValidator(private val file: File): Validator() {
         }
     }
 
-    private fun hasBadMetadata(metadata: Metadata): Boolean {
+    private fun hasBadMetadata(metadata: BttrMetadata): Boolean {
         return metadata.language.isBlank()
             .or(metadata.anthology.isBlank())
             .or(metadata.version.isBlank())
