@@ -38,7 +38,7 @@ class WavFileReader(private val file: File) {
     private val cueListBuilder = CueListBuilder()
     private val metadataMapper: MetadataMapper = MetadataMapper()
 
-    private var metadata: Metadata = Metadata()
+    private var metadata: BttrMetadata = BttrMetadata()
     private val cues: List<CuePoint> = mutableListOf()
 
     internal var totalAudioLength = 0
@@ -243,7 +243,7 @@ class WavFileReader(private val file: File) {
         metadata = try {
             metadataMapper.fromJSON(json)
         } catch (e: Exception) {
-            Metadata()
+            BttrMetadata()
         }
     }
 
@@ -261,7 +261,7 @@ class WavFileReader(private val file: File) {
         ).all { true }
     }
 
-    fun readMetadata(): Metadata {
+    fun readMetadata(): BttrMetadata {
         readFile()
         return metadata
     }
