@@ -1,4 +1,4 @@
-package org.bibletranslationtools.jvm.ui.filedataitem
+package org.bibletranslationtools.jvm.ui.filedatacell
 
 import com.jfoenix.controls.JFXComboBox
 import com.jfoenix.controls.JFXTextField
