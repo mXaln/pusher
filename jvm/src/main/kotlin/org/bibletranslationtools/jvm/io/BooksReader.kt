@@ -21,12 +21,14 @@ class BooksReader : IBooksReader {
     }
 
     private fun parseBooks(): List<String> {
-        val booksFile = File(javaClass.getResource("/book_catalog.json").file)
+        val booksFile = javaClass.getResource("/book_catalog.json").openStream()
 
-        val booksList: List<BookSchema> = jacksonObjectMapper().readValue(booksFile)
+        booksFile.use { inputStream ->
+            val booksList: List<BookSchema> = jacksonObjectMapper().readValue(inputStream)
 
-        return booksList.map {
-            it.slug
+            return booksList.map {
+                it.slug
+            }
         }
     }
 }
