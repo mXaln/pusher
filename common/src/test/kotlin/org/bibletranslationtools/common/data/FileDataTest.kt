@@ -9,24 +9,28 @@ class FileDataTest {
     private val fileDataTr = FileData(File("test.tr"))
     private val fileDataMp3 = FileData(File("test.mp3"))
     private val fileDataWav = FileData(File("test.wav"))
+    private val fileDataTrCompressed = FileData(
+        file = File("test.tr"),
+        mediaExtension = MediaExtension.MP3
+    )
 
     @Test
-    fun mediaExtensionAvailable() {
-        Assert.assertTrue(fileDataTr.mediaExtensionAvailable)
+    fun testMediaIsContainer() {
+        Assert.assertTrue(fileDataTr.isContainer)
     }
 
     @Test
-    fun mediaExtensionNotAvailable() {
-        Assert.assertFalse(fileDataMp3.mediaExtensionAvailable)
+    fun testMediaIsCompressed() {
+        Assert.assertTrue(fileDataMp3.isCompressed)
     }
 
     @Test
-    fun mediaQualityAvailable() {
-        Assert.assertTrue(fileDataMp3.mediaQualityAvailable)
+    fun testMediaIsNotCompressed() {
+        Assert.assertTrue(!fileDataWav.isCompressed)
     }
 
     @Test
-    fun mediaQualityNotAvailable() {
-        Assert.assertFalse(fileDataWav.mediaQualityAvailable)
+    fun testMediaIsContainerAndCompressed() {
+        Assert.assertTrue(fileDataTrCompressed.isContainerAndCompressed)
     }
 }
