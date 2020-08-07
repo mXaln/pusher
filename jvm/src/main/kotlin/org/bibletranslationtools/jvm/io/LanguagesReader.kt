@@ -29,7 +29,7 @@ class LanguagesReader : ILanguagesReader {
     }
 
     private fun parseLanguages(): List<String> {
-        val languagesFile = File(javaClass.getResource("/port_gateway_languages.csv").file)
+        val languagesFile = javaClass.getResource("/port_gateway_languages.csv").openStream()
 
         val mapper = CsvMapper()
         val schema = CsvSchema.emptySchema().withHeader()
