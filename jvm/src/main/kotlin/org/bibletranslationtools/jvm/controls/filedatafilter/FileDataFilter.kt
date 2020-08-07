@@ -13,6 +13,8 @@ import org.bibletranslationtools.common.data.ResourceType
 import org.bibletranslationtools.jvm.controls.skins.FileDataFilterSkin
 import tornadofx.*
 
+const val MAX_CHAPTER_LENGTH = 3
+
 class FileDataFilter : Control() {
 
     val languageLabelProperty = SimpleStringProperty()

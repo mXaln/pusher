@@ -12,7 +12,7 @@ import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
 import org.bibletranslationtools.jvm.controls.filedatafilter.FileDataFilter
-import org.bibletranslationtools.jvm.ui.filedataitem.MAX_CHAPTER_LENGTH
+import org.bibletranslationtools.jvm.controls.filedatafilter.MAX_CHAPTER_LENGTH
 import tornadofx.*
 
 class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileDataFilter>(filter) {
