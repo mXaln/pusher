@@ -7,7 +7,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import io.reactivex.Single
 import org.bibletranslationtools.common.io.ILanguagesReader
-import java.io.File
 
 
 class LanguagesReader : ILanguagesReader {
