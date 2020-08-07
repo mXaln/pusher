@@ -33,19 +33,21 @@ class LanguagesReader : ILanguagesReader {
         val mapper = CsvMapper()
         val schema = CsvSchema.emptySchema().withHeader()
 
-        val languagesIterator: MappingIterator<PortGatewayLanguage> = mapper.readerFor(
-            PortGatewayLanguage::class.java
-        )
-            .with(schema)
-            .readValues(languagesFile)
+        languagesFile.use { inputStream ->
+            val languagesIterator: MappingIterator<PortGatewayLanguage> = mapper.readerFor(
+                PortGatewayLanguage::class.java
+            )
+                .with(schema)
+                .readValues(inputStream)
 
-        val languages = mutableListOf<String>()
-        languagesIterator.forEach {
-            languages.add(it.code)
+            val languages = mutableListOf<String>()
+            languagesIterator.forEach {
+                languages.add(it.code)
+            }
+
+            languages.sort()
+
+            return languages
         }
-
-        languages.sort()
-
-        return languages
     }
 }
