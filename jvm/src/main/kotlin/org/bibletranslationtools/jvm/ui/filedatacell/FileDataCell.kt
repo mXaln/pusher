@@ -11,11 +11,10 @@ import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
 import org.bibletranslationtools.jvm.controls.filedatafilter.FileDataFilter
+import org.bibletranslationtools.jvm.controls.filedatafilter.MAX_CHAPTER_LENGTH
 import org.bibletranslationtools.jvm.ui.FileDataItem
 import org.bibletranslationtools.jvm.ui.main.MainViewModel
 import tornadofx.*
-
-const val MAX_CHAPTER_LENGTH = 3
 
 class FileDataCell(
     private val item: FileDataItem,
