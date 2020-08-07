@@ -153,7 +153,11 @@ class FileDataCell(
     }
 }
 
-fun EventTarget.filedatacell(data: FileDataItem, filter: FileDataFilter, op: FileDataCell.() -> Unit = {}): FileDataCell {
+fun EventTarget.filedatacell(
+    data: FileDataItem,
+    filter: FileDataFilter,
+    op: FileDataCell.() -> Unit = {}
+): FileDataCell {
     val fileDataItem = FileDataCell(data, filter)
     return opcr(this, fileDataItem, op)
 }
