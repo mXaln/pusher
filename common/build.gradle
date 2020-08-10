@@ -4,6 +4,7 @@ dependencies {
     implementation"com.fasterxml.jackson.core:jackson-databind:$jacksonVer"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
     implementation "com.github.WycliffeAssociates.ArchiveOfHolding:aoh:$aohVer"
+    implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
 
     // Testing
     testImplementation "junit:junit:$junitVer"
