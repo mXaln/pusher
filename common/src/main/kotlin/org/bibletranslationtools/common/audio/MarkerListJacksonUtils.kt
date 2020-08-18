@@ -3,23 +3,23 @@ package org.bibletranslationtools.common.audio
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.*
+import org.wycliffeassociates.otter.common.audio.wav.WavCue
 import java.lang.IllegalArgumentException
 import java.text.ParseException
 
-class MarkerListDeserializer : JsonDeserializer<List<CuePoint>>() {
-    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): List<CuePoint> {
+class MarkerListDeserializer : JsonDeserializer<List<WavCue>>() {
+    override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): List<WavCue> {
         val node = p?.codec?.readTree<JsonNode>(p) ?: throw ParseException("Unable to parse json", 0)
-        val cuePoints = mutableListOf<CuePoint>()
+        val cuePoints = mutableListOf<WavCue>()
         for (key in node.fieldNames()) {
-            val labelNum = Utils.toNumeric(key)
-            cuePoints.add(CuePoint(node.get(key).asInt(), labelNum))
+            cuePoints.add(WavCue(node.get(key).asInt(), key))
         }
         return cuePoints
     }
 }
 
-class MarkerListSerializer : JsonSerializer<List<CuePoint>>() {
-    override fun serialize(value: List<CuePoint>?, gen: JsonGenerator?, serializers: SerializerProvider?) {
+class MarkerListSerializer : JsonSerializer<List<WavCue>>() {
+    override fun serialize(value: List<WavCue>?, gen: JsonGenerator?, serializers: SerializerProvider?) {
         if (value == null) throw IllegalArgumentException("Input cannot be null")
         gen?.writeStartObject()
         for (cue in value) {
