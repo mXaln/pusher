@@ -5,7 +5,7 @@ import java.io.File
 
 class JpgValidator(private val file: File) : Validator() {
     companion object {
-        const val JPG_MIME_TYPE = "image/jpeg"
+        private const val JPG_MIME_TYPE = "image/jpeg"
     }
 
     override fun validate() {

@@ -6,7 +6,7 @@ import java.io.File
 class CueValidator(private val file: File) : Validator() {
 
     companion object {
-        const val PLAIN_TEXT_MIME_TYPE = "text/plain"
+        private const val PLAIN_TEXT_MIME_TYPE = "text/plain"
     }
 
     override fun validate() {

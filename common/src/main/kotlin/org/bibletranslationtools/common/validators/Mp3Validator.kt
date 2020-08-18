@@ -6,7 +6,7 @@ import java.io.File
 class Mp3Validator(private val file: File) : Validator() {
 
     companion object {
-        const val MP3_MIME_TYPE = "audio/mpeg"
+        private const val MP3_MIME_TYPE = "audio/mpeg"
     }
 
     override fun validate() {
