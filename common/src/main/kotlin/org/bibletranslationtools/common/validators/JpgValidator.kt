@@ -3,7 +3,7 @@ package org.bibletranslationtools.common.validators
 import org.apache.tika.Tika
 import java.io.File
 
-class JpgValidator(private val file: File) : Validator() {
+class JpgValidator(private val file: File) : IValidator {
     companion object {
         private const val JPG_MIME_TYPE = "image/jpeg"
     }

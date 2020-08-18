@@ -8,7 +8,7 @@ import org.wycliffeassociates.otter.common.audio.wav.WavMetadata
 import java.io.File
 import java.util.regex.Pattern
 
-class WavValidator(private val file: File): Validator() {
+class WavValidator(private val file: File) : IValidator {
 
     companion object {
         private const val LANGUAGE = "([a-zA-Z]{2,3}[-a-zA-Z]*?)"
