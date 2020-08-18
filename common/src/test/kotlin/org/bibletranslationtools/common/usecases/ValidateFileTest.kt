@@ -1,7 +1,7 @@
 package org.bibletranslationtools.common.usecases
 
-import org.bibletranslationtools.common.audio.InvalidWavFileException
 import org.junit.Test
+import org.wycliffeassociates.otter.common.audio.wav.InvalidWavFileException
 import java.io.File
 
 class ValidateFileTest {
@@ -21,7 +21,7 @@ class ValidateFileTest {
         val result = ValidateFile(file).validate().test()
 
         result.assertError(InvalidWavFileException::class.java)
-        result.assertErrorMessage("Bad metadata")
+        result.assertErrorMessage("Chunk has corrupt metadata")
         result.assertNotComplete()
     }
 }
