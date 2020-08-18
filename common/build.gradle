@@ -5,6 +5,7 @@ dependencies {
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
     implementation "com.github.WycliffeAssociates.ArchiveOfHolding:aoh:$aohVer"
     implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
+    implementation "org.apache.tika:tika-core:$tikaVer"
 
     // Testing
     testImplementation "junit:junit:$junitVer"
