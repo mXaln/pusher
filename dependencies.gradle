@@ -22,4 +22,5 @@ ext {
     slf4jApiVer = '2.0.0-alpha1'
     log4j2Ver = '2.12.1'
     ikonliVer = '11.3.4'
+    commonsnetVer = '3.7'
 }

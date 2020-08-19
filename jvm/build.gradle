@@ -46,6 +46,9 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonDataFormat"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
 
+    // Apache network
+    implementation "commons-net:commons-net:$commonsnetVer"
+
     implementation project(':common')
 
     // Testing
