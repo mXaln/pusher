@@ -15,6 +15,7 @@ ext {
     rxkotlinfxVer = '2.2.2'
     jfoenixVer = '9.0.8'
     jacksonVer = '2.11.0'
+    jacksonDataFormat = '2.8.8'
     junitVer = '4.12'
     mockitoVer = '2.+'
     mockitoKotlinVer = '2.1.0'
