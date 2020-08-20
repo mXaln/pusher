@@ -5,7 +5,7 @@ import org.wycliffeassociates.io.LanguageLevel
 import java.io.File
 import java.nio.file.Files
 
-class TrValidator(private val file: File) : Validator() {
+class TrValidator(private val file: File) : IValidator {
 
     /**
      * Validates TR file integrity by trying to extract it

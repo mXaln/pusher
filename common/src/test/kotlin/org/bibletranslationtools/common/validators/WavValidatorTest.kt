@@ -29,6 +29,26 @@ class WavValidatorTest {
     }
 
     @Test
+    fun testBadChapterFileName() {
+        expectedException.expect(InvalidWavFileException::class.java)
+        expectedException.expectMessage("Chapter filename is incorrect")
+
+        val file = File(javaClass.getResource("/en_mat_c01.wav").file)
+        val validator = WavValidator(file)
+        validator.validate()
+    }
+
+    @Test
+    fun testBadChunkVerseFileName() {
+        expectedException.expect(InvalidWavFileException::class.java)
+        expectedException.expectMessage("Chunk/verse filename is incorrect")
+
+        val file = File(javaClass.getResource("/mat_c01_v01.wav").file)
+        val validator = WavValidator(file)
+        validator.validate()
+    }
+
+    @Test
     fun testWavChunkHasGoodMetadata() {
         val file = File(javaClass.getResource("/en_ulb_b41_mat_c01_v01_t01.wav").file)
         val validator = WavValidator(file)
