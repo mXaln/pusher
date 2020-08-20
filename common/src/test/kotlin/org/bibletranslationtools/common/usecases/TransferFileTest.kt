@@ -1,8 +1,7 @@
-package org.bibletranslationtools.common
+package org.bibletranslationtools.common.usecases
 
 import com.nhaarman.mockitokotlin2.doReturn
 import org.bibletranslationtools.common.client.IFileTransferClient
-import org.bibletranslationtools.common.usecases.TransferFile
 import org.junit.Test
 import com.nhaarman.mockitokotlin2.mock
 import io.reactivex.Completable
