@@ -24,8 +24,4 @@ data class FileData(
 
     val isContainerAndCompressed =
         isContainer && CompressedExtensions.isSupported(mediaExtension.toString())
-
-    val mediaExtensionAvailable = isContainer
-
-    val mediaQualityAvailable = isContainerAndCompressed || isCompressed
 }
