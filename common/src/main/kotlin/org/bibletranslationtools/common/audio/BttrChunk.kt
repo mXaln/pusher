@@ -71,7 +71,9 @@ class BttrChunk : RiffChunk {
         chunk.order(ByteOrder.LITTLE_ENDIAN)
 
         // Skip List Chunks that are not subtype "INFO"
-        if (chunk.remaining() < CHUNK_LABEL_SIZE || INFO_LABEL != chunk.getText(CHUNK_LABEL_SIZE)) {
+        val chunkFinished = chunk.remaining() < CHUNK_LABEL_SIZE
+        val notInfoLabel = INFO_LABEL != chunk.getText(CHUNK_LABEL_SIZE)
+        if (chunkFinished || notInfoLabel) {
             return
         }
 
