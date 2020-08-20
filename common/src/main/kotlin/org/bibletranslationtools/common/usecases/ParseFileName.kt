@@ -112,8 +112,6 @@ class ParseFileName(private val file: File) {
                     Grouping.of(_matcher.group(GROUPS.GROUPING.value))
                 _matcher.group(GROUPS.LAST_VERSE.value) != null ->
                     Grouping.of("chunk")
-                _matcher.group(GROUPS.FIRST_VERSE.value) != null ->
-                    Grouping.of("verse")
                 else -> null
             }
         }
