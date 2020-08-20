@@ -39,3 +39,4 @@ gradle-app.setting
 
 config.properties
 local.properties
+out/

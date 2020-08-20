@@ -24,4 +24,5 @@ ext {
     ikonliVer = '11.3.4'
     aohVer = '1.3'
     otterAudioVer = '0.0.2-20200807.123704-1'
+    tikaVer = '1.11'
 }

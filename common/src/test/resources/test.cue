@@ -1,0 +1,3 @@
+FILE "test.mp3" BINARY
+  TRACK 01
+    INDEX 01 00:00:00
