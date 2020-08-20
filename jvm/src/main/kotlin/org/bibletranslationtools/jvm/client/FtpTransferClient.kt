@@ -13,19 +13,17 @@ class FtpTransferClient(
     private val targetPath: String
 ) : IFileTransferClient {
 
-    companion object {
-        private const val FTP_SERVER = "localhost"
-        private const val FTP_USER = ""
-        private const val FTP_PASSWORD = ""
-    }
+    private val ftpServer = System.getenv("MAUI_FTP_SERVER")
+    private val ftpUser = System.getenv("MAUI_FTP_USER")
+    private val ftpPassword = System.getenv("MAUI_FTP_PASSWORD")
 
     override fun transfer(): Completable {
         return Completable.fromCallable {
             if (source.isDirectory) throw IllegalArgumentException("Source should not be a directory")
 
             val ftpClient = FTPClient()
-            ftpClient.connect(FTP_SERVER)
-            ftpClient.login(FTP_USER, FTP_PASSWORD)
+            ftpClient.connect(ftpServer)
+            ftpClient.login(ftpUser, ftpPassword)
             ftpClient.enterLocalPassiveMode()
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE)
 
