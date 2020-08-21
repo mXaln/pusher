@@ -79,15 +79,15 @@ class MainViewModel : ViewModel() {
         ParseFileName(file).parse()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .doOnError {
-                val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
-            }
-            .onErrorResumeNext { SingleSource {} }
-            .subscribe { fileData ->
-                val fileDataItem = FileDataMapper().fromEntity(fileData)
-                if (!fileDataList.contains(fileDataItem)) {
-                    fileDataList.add(fileDataItem)
+            .subscribe { fileData, error ->
+                if (fileData != null) {
+                    val fileDataItem = FileDataMapper().fromEntity(fileData)
+                    if (!fileDataList.contains(fileDataItem)) {
+                        fileDataList.add(fileDataItem)
+                    }
+                } else {
+                    val notImportedText = MessageFormat.format(messages["notImported"], file.name)
+                    snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
                 }
             }
     }
