@@ -61,4 +61,12 @@ class FileDataItem(data: FileData) {
             },
             mediaExtensionProperty
         )
+
+    override fun equals(other: Any?): Boolean {
+        return (other as? FileDataItem)?.let {
+            it.file == this.file
+        } ?: false
+    }
+
+    override fun hashCode() = file.hashCode()
 }

@@ -1,6 +1,8 @@
 package org.bibletranslationtools.jvm.ui.main
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.Single
+import io.reactivex.SingleSource
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javafx.beans.property.SimpleListProperty
@@ -77,6 +79,11 @@ class MainViewModel : ViewModel() {
         ParseFileName(file).parse()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
+            .doOnError {
+                val notImportedText = MessageFormat.format(messages["notImported"], file.name)
+                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
+            }
+            .onErrorResumeNext { SingleSource {} }
             .subscribe { fileData ->
                 val fileDataItem = FileDataMapper().fromEntity(fileData)
                 if (!fileDataList.contains(fileDataItem)) {
