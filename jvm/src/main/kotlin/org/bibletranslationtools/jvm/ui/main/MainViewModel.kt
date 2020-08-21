@@ -80,14 +80,17 @@ class MainViewModel : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .subscribe { fileData, error ->
-                if (fileData != null) {
-                    val fileDataItem = FileDataMapper().fromEntity(fileData)
-                    if (!fileDataList.contains(fileDataItem)) {
-                        fileDataList.add(fileDataItem)
+                when {
+                    fileData != null -> {
+                        val fileDataItem = FileDataMapper().fromEntity(fileData)
+                        if (!fileDataList.contains(fileDataItem)) {
+                            fileDataList.add(fileDataItem)
+                        }
                     }
-                } else {
-                    val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                    snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
+                    error != null -> {
+                        val notImportedText = MessageFormat.format(messages["notImported"], file.name)
+                        snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
+                    }
                 }
             }
     }
