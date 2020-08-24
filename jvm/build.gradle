@@ -46,6 +46,7 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonDataFormat"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
 
+    implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
     implementation project(':common')
 
     // Testing

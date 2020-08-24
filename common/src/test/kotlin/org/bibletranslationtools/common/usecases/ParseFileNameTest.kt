@@ -20,7 +20,7 @@ class ParseFileNameTest {
             1,
             null,
             null,
-            Grouping.VERSE
+            null
         )
         val result = ParseFileName(file).parse().test()
 
@@ -51,7 +51,7 @@ class ParseFileNameTest {
             1,
             null,
             null,
-            Grouping.VERSE
+            null
         )
         val result = ParseFileName(file).parse().test()
 
