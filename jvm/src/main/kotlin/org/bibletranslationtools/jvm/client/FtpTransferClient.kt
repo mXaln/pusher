@@ -30,7 +30,7 @@ class FtpTransferClient(
             val dirsCreated = createFtpDirectories(ftpClient)
             if (dirsCreated) {
                 source.inputStream().use {
-                    if (!ftpClient.storeFile("/$targetPath", it)) {
+                    if (!ftpClient.storeFile(targetPath, it)) {
                         throw IOException("Transfer of ${source.name} failed!")
                     }
                 }
@@ -61,6 +61,8 @@ class FtpTransferClient(
                 }
             }
         }
+        // Reset working directory to root directory
+        ftpClient.changeWorkingDirectory("/")
         return true
     }
 }
