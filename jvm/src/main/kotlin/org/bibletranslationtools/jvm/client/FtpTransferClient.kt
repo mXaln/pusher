@@ -30,7 +30,7 @@ class FtpTransferClient(
             val dirsCreated = createFtpDirectories(ftpClient)
             if (dirsCreated) {
                 source.inputStream().use {
-                    if (!ftpClient.storeFile(source.name, it)) {
+                    if (!ftpClient.storeFile("/$targetPath", it)) {
                         throw IOException("Transfer of ${source.name} failed!")
                     }
                 }
@@ -50,11 +50,14 @@ class FtpTransferClient(
         for (dir in pathElements) {
             val existed = ftpClient.changeWorkingDirectory(dir)
             if (!existed) {
-                val created = ftpClient.makeDirectory(dir)
-                if (created) {
-                    ftpClient.changeWorkingDirectory(dir)
-                } else {
-                    return false
+                // Do not create a dir if it looks like a file name
+                if (!dir.contains(".")) {
+                    val created = ftpClient.makeDirectory(dir)
+                    if (created) {
+                        ftpClient.changeWorkingDirectory(dir)
+                    } else {
+                        return false
+                    }
                 }
             }
         }
