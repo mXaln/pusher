@@ -72,10 +72,9 @@ class MainView : View() {
                 groupingsProperty.set(viewModel.groupings)
 
                 onConfirmAction {
-                    showConfirmDialog(
-                        { onConfirmCallback(true) },
-                        { onConfirmCallback(false) }
-                    )
+                    showConfirmDialog { answer ->
+                        onConfirmCallback(answer)
+                    }
                 }
             }
 
@@ -145,7 +144,7 @@ class MainView : View() {
         }
     }
 
-    private fun showConfirmDialog(onYes: () -> Unit, onNo: () -> Unit) {
+    private fun showConfirmDialog(op: (answer: Boolean) -> Unit) {
         Alert(Alert.AlertType.CONFIRMATION).apply {
             title = messages["confirmSelection"]
             headerText = null
@@ -162,8 +161,8 @@ class MainView : View() {
             val result = showAndWait()
 
             when (result.get()) {
-                yesButton -> onYes.invoke()
-                noButton -> onNo.invoke()
+                yesButton -> op.invoke(true)
+                noButton -> op.invoke(false)
             }
         }
     }
