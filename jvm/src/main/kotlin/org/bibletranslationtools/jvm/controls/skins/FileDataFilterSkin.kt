@@ -135,17 +135,17 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
         }
     }
 
-    private fun <T> itemSelectionAction(property: Property<T>, box: ComboBox<T>, old: T, new: T) {
+    private fun <T> itemSelectionAction(selected: Property<T>, dropdownList: ComboBox<T>, old: T, new: T) {
         if (!isSelectionChanging) {
             isSelectionChanging = true
             filter.onConfirmActionProperty.value.handle(ActionEvent())
             filter.callbackObserver?.subscribe { answer ->
                 if (answer) {
-                    property.value = new
+                    selected.value = new
                     isSelectionChanging = false
                 } else {
                     runLater {
-                        box.selectionModel.select(old)
+                        dropdownList.selectionModel.select(old)
                         isSelectionChanging = false
                     }
                 }
