@@ -1,5 +1,7 @@
 package org.bibletranslationtools.jvm.controls.skins
 
+import javafx.beans.property.Property
+import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Node
@@ -59,6 +61,8 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
     @FXML
     private lateinit var groupingsList: ComboBox<Grouping>
 
+    private var isSelectionChanging = false
+
     init {
         loadFXML()
         initialize()
@@ -80,7 +84,6 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
         booksList.itemsProperty().bind(filter.booksProperty)
 
         chapterLabel.textProperty().bind(filter.chapterLabelProperty)
-        filter.chapterProperty.bind(chapter.textProperty())
         chapter.filterInput {
             it.controlNewText.isInt() && it.controlNewText.length <= MAX_CHAPTER_LENGTH
         }
@@ -96,12 +99,58 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
     }
 
     private fun initializeActions() {
-        filter.selectedLanguageProperty.bind(languagesList.selectionModel.selectedItemProperty())
-        filter.selectedResourceTypeProperty.bind(resourceTypesList.selectionModel.selectedItemProperty())
-        filter.selectedBookProperty.bind(booksList.selectionModel.selectedItemProperty())
-        filter.selectedMediaExtensionProperty.bind(mediaExtensionsList.selectionModel.selectedItemProperty())
-        filter.selectedMediaQualityProperty.bind(mediaQualitiesList.selectionModel.selectedItemProperty())
-        filter.selectedGroupingProperty.bind(groupingsList.selectionModel.selectedItemProperty())
+        languagesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedLanguageProperty, languagesList, old, new)
+        }
+
+        resourceTypesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedResourceTypeProperty, resourceTypesList, old, new)
+        }
+
+        booksList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedBookProperty, booksList, old, new)
+        }
+
+        chapter.setOnAction {
+            filter.onConfirmActionProperty.value.handle(ActionEvent())
+            filter.callbackObserver?.subscribe { answer ->
+                if (answer) {
+                    filter.chapterProperty.value = chapter.text
+                } else {
+                    chapter.text = null
+                }
+            }
+        }
+
+        mediaExtensionsList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedMediaExtensionProperty, mediaExtensionsList, old, new)
+        }
+
+        mediaQualitiesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedMediaQualityProperty, mediaQualitiesList, old, new)
+        }
+
+        groupingsList.selectionModel.selectedItemProperty().addListener { _, old, new ->
+            itemSelectionAction(filter.selectedGroupingProperty, groupingsList, old, new)
+        }
+    }
+
+    private fun <T> itemSelectionAction(property: Property<T>, box: ComboBox<T>, old: T, new: T) {
+        if (!isSelectionChanging) {
+            isSelectionChanging = true
+            filter.onConfirmActionProperty.value.handle(ActionEvent())
+            filter.callbackObserver?.subscribe { answer ->
+                if (answer) {
+                    property.value = new
+                    isSelectionChanging = false
+                } else {
+                    runLater {
+                        box.selectionModel.select(old)
+                        isSelectionChanging = false
+                    }
+                }
+            }
+        }
     }
 
     private fun loadFXML() {

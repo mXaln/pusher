@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXSnackbar
 import com.jfoenix.controls.JFXSnackbarLayout
 import javafx.event.EventHandler
 import javafx.geometry.Pos
+import javafx.scene.control.Alert
+import javafx.scene.control.ButtonType
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
@@ -68,6 +70,13 @@ class MainView : View() {
 
                 groupingLabelProperty.set(messages["grouping"])
                 groupingsProperty.set(viewModel.groupings)
+
+                onConfirmAction {
+                    showConfirmDialog(
+                        { onConfirmCallback(true) },
+                        { onConfirmCallback(false) }
+                    )
+                }
             }
 
             add(filter)
@@ -133,6 +142,29 @@ class MainView : View() {
                     null
                 )
             )
+        }
+    }
+
+    private fun showConfirmDialog(onYes: () -> Unit, onNo: () -> Unit) {
+        Alert(Alert.AlertType.CONFIRMATION).apply {
+            title = messages["confirmSelection"]
+            headerText = null
+            contentText = messages["confirmSelectionQuestion"]
+
+            val yesButton = ButtonType(messages["yes"])
+            val noButton = ButtonType(messages["no"])
+
+            buttonTypes.setAll(
+                yesButton,
+                noButton
+            )
+
+            val result = showAndWait()
+
+            when (result.get()) {
+                yesButton -> onYes.invoke()
+                noButton -> onNo.invoke()
+            }
         }
     }
 }
