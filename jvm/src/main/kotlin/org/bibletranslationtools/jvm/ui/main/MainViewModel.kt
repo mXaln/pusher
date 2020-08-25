@@ -10,8 +10,11 @@ import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
+import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
+import org.bibletranslationtools.common.usecases.TransferFile
 import org.bibletranslationtools.common.usecases.ValidateFile
+import org.bibletranslationtools.jvm.client.FtpTransferClient
 import org.bibletranslationtools.jvm.io.BooksReader
 import org.bibletranslationtools.jvm.io.LanguagesReader
 import org.bibletranslationtools.jvm.ui.FileDataItem
@@ -47,6 +50,45 @@ class MainViewModel : ViewModel() {
                 importFile(it)
             }
         }
+    }
+
+    fun upload() {
+        fileDataList
+            .forEach { fileDataItem ->
+                val fileData = FileDataMapper().toEntity(fileDataItem)
+                MakePath(fileData).build()
+                    .subscribeOn(Schedulers.io())
+                    .observeOnFx()
+                    .subscribe { path, error ->
+                        when {
+                            path != null -> {
+                                upload2(fileDataItem, path)
+                            }
+                            error != null -> {
+                                val notImportedText = MessageFormat.format(messages["notImported"], fileDataItem.file.name)
+                                snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
+                            }
+                        }
+                    }
+            }
+    }
+
+    private fun upload2(fileDataItem: FileDataItem, targetPath: String) {
+        val transferClient = FtpTransferClient(fileDataItem.file, targetPath)
+        TransferFile(transferClient).transfer()
+            .subscribeOn(Schedulers.io())
+            .observeOnFx()
+            .doOnError {
+                val notImportedText = MessageFormat.format(messages["notImported"], fileDataItem.file.name)
+                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
+            }
+            .toSingleDefault(true)
+            .onErrorReturnItem(false)
+            .subscribe { success ->
+                if (success) {
+                    fileDataList.remove(fileDataItem)
+                }
+            }
     }
 
     private fun importFile(file: File) {
