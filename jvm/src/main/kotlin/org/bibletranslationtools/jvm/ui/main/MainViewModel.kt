@@ -1,8 +1,6 @@
 package org.bibletranslationtools.jvm.ui.main
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.Single
-import io.reactivex.SingleSource
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javafx.beans.property.SimpleListProperty
@@ -57,37 +55,20 @@ class MainViewModel : ViewModel() {
             .forEach { fileDataItem ->
                 val fileData = FileDataMapper().toEntity(fileDataItem)
                 MakePath(fileData).build()
+                    .flatMapCompletable { targetPath ->
+                        val transferClient = FtpTransferClient(fileDataItem.file, targetPath)
+                        TransferFile(transferClient).transfer()
+                    }
+                    .doOnError { emitErrorMessage(it, fileDataItem.file) }
                     .subscribeOn(Schedulers.io())
                     .observeOnFx()
-                    .subscribe { path, error ->
-                        when {
-                            path != null -> {
-                                upload2(fileDataItem, path)
-                            }
-                            error != null -> {
-                                val notImportedText = MessageFormat.format(messages["notImported"], fileDataItem.file.name)
-                                snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
-                            }
+                    .toSingleDefault(true)
+                    .onErrorReturnItem(false)
+                    .subscribe { success ->
+                        if (success) {
+                            fileDataList.remove(fileDataItem)
                         }
                     }
-            }
-    }
-
-    private fun upload2(fileDataItem: FileDataItem, targetPath: String) {
-        val transferClient = FtpTransferClient(fileDataItem.file, targetPath)
-        TransferFile(transferClient).transfer()
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
-            .doOnError {
-                val notImportedText = MessageFormat.format(messages["notImported"], fileDataItem.file.name)
-                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
-            }
-            .toSingleDefault(true)
-            .onErrorReturnItem(false)
-            .subscribe { success ->
-                if (success) {
-                    fileDataList.remove(fileDataItem)
-                }
             }
     }
 
@@ -96,10 +77,7 @@ class MainViewModel : ViewModel() {
         ValidateFile(file).validate()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .doOnError {
-                val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
-            }
+            .doOnError { emitErrorMessage(it, file) }
             .toSingleDefault(true)
             .onErrorReturnItem(false)
             .subscribe { success ->
@@ -129,10 +107,7 @@ class MainViewModel : ViewModel() {
                             fileDataList.add(fileDataItem)
                         }
                     }
-                    error != null -> {
-                        val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                        snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
-                    }
+                    error != null -> emitErrorMessage(error, file)
                 }
             }
     }
@@ -153,5 +128,10 @@ class MainViewModel : ViewModel() {
             .subscribe { _books ->
                 books.addAll(_books)
             }
+    }
+
+    private fun emitErrorMessage(error: Throwable, file: File) {
+        val notImportedText = MessageFormat.format(messages["notImported"], file.name)
+        snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
     }
 }
