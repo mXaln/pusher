@@ -5,6 +5,7 @@ plugins {
 
 apply plugin: 'application'
 apply plugin: 'idea'
+apply plugin: 'edu.sc.seis.launch4j'
 
 javafx {
     version = '11'
@@ -19,7 +20,7 @@ repositories {
 }
 
 application {
-    mainClassName = "org.bibletranslationtools.jvm.MainKt"
+    mainClassName = "org.bibletranslationtools.jvm.MainAppKt"
 }
 
 dependencies {
@@ -60,7 +61,29 @@ shadowJar {
     mergeServiceFiles()
     manifest {
         attributes(
-                'Main-Class': "org.bibletranslationtools.jvm.MainKt"
+                'Main-Class': "org.bibletranslationtools.jvm.MainAppKt"
         )
     }
 }
+
+task copyJre(type: Copy) {
+    if (project.hasProperty("jrePath")) {
+        from jrePath
+        into "${buildDir}/launch4j/jre"
+    }
+}
+
+launch4j {
+    outfile = "${rootProject.name}.exe"
+    mainClassName = project.mainClassName
+    bundledJrePath = "./jre"
+    bundledJre64Bit = true
+    jdkPreference = 'jdkOnly'
+    icon = "${projectDir}/launcher.ico"
+    jar = "${buildDir}/libs/${rootProject.name}.jar"
+    productName = rootProject.name
+    fileDescription = rootProject.name
+}
+
+project.tasks.createExe.dependsOn copyJre
+project.tasks.createExe.dependsOn shadowJar
