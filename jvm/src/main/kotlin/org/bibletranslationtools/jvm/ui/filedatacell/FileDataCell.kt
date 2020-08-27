@@ -150,8 +150,6 @@ class FileDataCell(
                                 selectionModel.select(it)
                             }
                         }
-
-                        disableWhen { fileDataItem.mediaQualityProperty.isNotNull }
                     }
                 )
             }
