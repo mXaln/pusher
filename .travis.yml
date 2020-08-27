@@ -7,6 +7,14 @@ addons:
     organization: bible-translation-tools
     token:
       secure: "l7VBPiDpe6vDLQ/+T2gy0STW5pxnbU8BKr3sagXMTN3qUWE4XuU5h5O+nSijtb+6m/ovplLqR5ZOyJhjrHQhqFBVGbRNYTDPd+Wu8r5jVdudhP17VjXwTKLHyEaVjiba03ZBfl2C8kwrjmwI5r+UGNtOAErt/f4wVnqL2uK3DEeLDRAECF+eKjBZMFUdxrrKtmwkfUz31vHhdjH3pmTZZdcxwA1o7Ojpm/93xjWsGZJvPH0OAE2CB1JCru+9rdouUAa6r6DtUHqAtI2tNt4RWIDtBwq519gtJmJK9Y6L950eYP7xq+ul/MDVDoVJDpLGRnfflW9BTN49ZknGkAI0oaGkiVFjuTdF0jca8+R7gnBSWIV7R5RiDiN3j6bbrw5PV4oOuXUesBKhD5xHhlkg3LeOcklmJaNgodvIfUYqUBQfd8CkMonbtVHA0j+YZSyouXzkXnXkX4p+wMO1vTMa+7Gly33t5xqa8/DzSqYbvrwifygegWKeR7YjCHkuTfUFN3W6fRcwsXJqW5CVZXtQFeXtPM1bV2EC6G/WUl3FHhcT3etgTUa6YpIcdQTlx3cwp9iuliW8PzIDXBG+k8F0aVCk6I6d71I78N5gY+1uSzJHtNnRyo1xMO1lwdHd9ON92vRr1gET2uRQ0EjW2/XcbV2bQAiGZTxgJmhFIxOM+aY="
+  artifacts:
+    s3_region: us-east-1
+    working_dir: out
+    target_paths:
+    - "/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_TAG}"
+    paths:
+    - $(find . -name '*.AppImage'  | tr "\n" ":")
+    - $(find . -name '*.exe'  | tr "\n" ":")
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -f $HOME/.gradle/caches/*/plugin-resoloution/
@@ -32,15 +40,6 @@ script:
   - mkdir out
   - cp $APPFILE ./out
   - cp $EXEFILE ./out
-addons:
-  artifacts:
-    s3_region: us-east-1
-    working_dir: out
-    target_paths:
-    - "/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_TAG}"
-    paths:
-    - $(find . -name '*.AppImage'  | tr "\n" ":")
-    - $(find . -name '*.exe'  | tr "\n" ":")
 deploy:
   provider: releases
   api_key:
