@@ -44,9 +44,7 @@ class FtpTransferClient(
             } catch (e: SocketException) {
                 throw SocketException(e.message)
             } finally {
-                println("Closing...")
                 if (ftpClient.isConnected) {
-                    println("Closed!")
                     ftpClient.logout()
                     ftpClient.disconnect()
                 }
