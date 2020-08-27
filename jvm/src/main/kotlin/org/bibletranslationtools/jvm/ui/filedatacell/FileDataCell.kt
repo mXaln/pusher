@@ -24,7 +24,11 @@ class FileDataCell(
 
     private val mainViewModel = find<MainViewModel>()
 
+    private val initLanguage = fileDataItem.language
+    private val initResourceType = fileDataItem.resourceType
+    private val initBook = fileDataItem.book
     private val initChapter = fileDataItem.chapter
+    private val initGrouping = fileDataItem.grouping
 
     init {
         importStylesheet(AppResources.load("/css/file-data-cell.css"))
@@ -52,7 +56,7 @@ class FileDataCell(
                             }
                         }
 
-                        disableWhen { fileDataItem.languageProperty.isNotNull }
+                        isDisable = !initLanguage.isNullOrEmpty()
                     }
                 )
             }
@@ -71,7 +75,7 @@ class FileDataCell(
                             }
                         }
 
-                        disableWhen { fileDataItem.resourceTypeProperty.isNotNull }
+                        isDisable = initResourceType != null
                     }
                 )
             }
@@ -90,7 +94,7 @@ class FileDataCell(
                             }
                         }
 
-                        disableWhen { fileDataItem.bookProperty.isNotNull }
+                        isDisable = !initBook.isNullOrEmpty()
                     }
                 )
             }
@@ -169,7 +173,7 @@ class FileDataCell(
                             }
                         }
 
-                        disableWhen { fileDataItem.groupingProperty.isNotNull }
+                        isDisable = initGrouping != null
 
                         setCellFactory {
                             object : ListCell<Grouping>() {
