@@ -78,6 +78,9 @@ class MakePath(private val fileData: FileData) {
             !fileData.isContainer && fileData.mediaExtension != null -> {
                 throw IllegalArgumentException("Media extension cannot be applied to non-container media")
             }
+            !fileData.isCompressed && !fileData.isContainerAndCompressed && fileData.mediaQuality != null -> {
+                throw IllegalArgumentException("Non-compressed media should not have a quality")
+            }
         }
     }
 
