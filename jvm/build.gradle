@@ -46,6 +46,8 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonDataFormat"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
 
+    implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
+
     // Apache network
     implementation "commons-net:commons-net:$commonsnetVer"
 
