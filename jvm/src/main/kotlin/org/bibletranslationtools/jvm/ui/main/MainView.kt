@@ -92,6 +92,10 @@ class MainView : View() {
                 add(
                     JFXButton(messages["upload"]).apply {
                         addClass("btn", "btn--primary", "main__upload_btn")
+
+                        setOnAction {
+                            viewModel.upload()
+                        }
                     }
                 )
             }

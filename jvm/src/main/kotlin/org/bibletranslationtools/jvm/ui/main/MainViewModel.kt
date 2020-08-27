@@ -1,8 +1,6 @@
 package org.bibletranslationtools.jvm.ui.main
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.Single
-import io.reactivex.SingleSource
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javafx.beans.property.SimpleListProperty
@@ -11,8 +9,11 @@ import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
+import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
+import org.bibletranslationtools.common.usecases.TransferFile
 import org.bibletranslationtools.common.usecases.ValidateFile
+import org.bibletranslationtools.jvm.client.FtpTransferClient
 import org.bibletranslationtools.jvm.io.BooksReader
 import org.bibletranslationtools.jvm.io.LanguagesReader
 import org.bibletranslationtools.jvm.ui.FileDataItem
@@ -52,6 +53,28 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+  
+    fun upload() {
+        fileDataList
+            .forEach { fileDataItem ->
+                val fileData = FileDataMapper().toEntity(fileDataItem)
+                MakePath(fileData).build()
+                    .flatMapCompletable { targetPath ->
+                        val transferClient = FtpTransferClient(fileDataItem.file, targetPath)
+                        TransferFile(transferClient).transfer()
+                    }
+                    .doOnError { emitErrorMessage(it, fileDataItem.file) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOnFx()
+                    .toSingleDefault(true)
+                    .onErrorReturnItem(false)
+                    .subscribe { success ->
+                        if (success) {
+                            fileDataList.remove(fileDataItem)
+                        }
+                    }
+            }
+    }
 
     fun restrictedGroupings(file: File): List<Grouping> {
         val groupings = Grouping.values().toList()
@@ -78,10 +101,7 @@ class MainViewModel : ViewModel() {
         ValidateFile(file).validate()
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .doOnError {
-                val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                snackBarObservable.onNext("$notImportedText ${it.message ?: ""}")
-            }
+            .doOnError { emitErrorMessage(it, file) }
             .toSingleDefault(true)
             .onErrorReturnItem(false)
             .subscribe { success ->
@@ -111,10 +131,7 @@ class MainViewModel : ViewModel() {
                             fileDataList.add(fileDataItem)
                         }
                     }
-                    error != null -> {
-                        val notImportedText = MessageFormat.format(messages["notImported"], file.name)
-                        snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
-                    }
+                    error != null -> emitErrorMessage(error, file)
                 }
             }
     }
@@ -151,5 +168,10 @@ class MainViewModel : ViewModel() {
         val matcher = pattern.matcher(file.nameWithoutExtension)
 
         return matcher.find()
+    }
+
+    private fun emitErrorMessage(error: Throwable, file: File) {
+        val notImportedText = MessageFormat.format(messages["notImported"], file.name)
+        snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
     }
 }
