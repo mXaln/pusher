@@ -26,4 +26,5 @@ ext {
     otterAudioVer = '0.0.2-20200807.123704-1'
     tikaVer = '1.11'
     commonsnetVer = '3.7'
+    launch4j = '2.4.6'
 }
