@@ -24,6 +24,12 @@ class FileDataCell(
 
     private val mainViewModel = find<MainViewModel>()
 
+    private val initLanguage = fileDataItem.language
+    private val initResourceType = fileDataItem.resourceType
+    private val initBook = fileDataItem.book
+    private val initChapter = fileDataItem.chapter
+    private val initGrouping = fileDataItem.grouping
+
     init {
         importStylesheet(AppResources.load("/css/file-data-cell.css"))
         addClass("file-data-cell")
@@ -45,8 +51,12 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.language)
                         bindSelected(fileDataItem.languageProperty)
                         filter.selectedLanguageProperty.onChange {
-                            selectionModel.select(it)
+                            if (fileDataItem.language == null) {
+                                selectionModel.select(it)
+                            }
                         }
+
+                        isDisable = !initLanguage.isNullOrEmpty()
                     }
                 )
             }
@@ -60,8 +70,12 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.resourceType)
                         bindSelected(fileDataItem.resourceTypeProperty)
                         filter.selectedResourceTypeProperty.onChange {
-                            selectionModel.select(it)
+                            if (fileDataItem.resourceType == null) {
+                                selectionModel.select(it)
+                            }
                         }
+
+                        isDisable = initResourceType != null
                     }
                 )
             }
@@ -75,8 +89,12 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.book)
                         bindSelected(fileDataItem.bookProperty)
                         filter.selectedBookProperty.onChange {
-                            selectionModel.select(it)
+                            if (fileDataItem.book == null) {
+                                selectionModel.select(it)
+                            }
                         }
+
+                        isDisable = !initBook.isNullOrEmpty()
                     }
                 )
             }
@@ -90,12 +108,16 @@ class FileDataCell(
                         text = fileDataItem.chapter?.toString() ?: ""
                         fileDataItem.chapterProperty.bind(textProperty())
                         filter.chapterProperty.onChange {
-                            text = it
+                            if (initChapter.isNullOrEmpty()) {
+                                text = it
+                            }
                         }
 
                         filterInput {
                             it.controlNewText.isInt() && it.controlNewText.length <= MAX_CHAPTER_LENGTH
                         }
+
+                        isDisable = !initChapter.isNullOrEmpty()
                     }
                 )
             }
@@ -128,7 +150,7 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.mediaQuality)
                         bindSelected(fileDataItem.mediaQualityProperty)
                         filter.selectedMediaQualityProperty.onChange {
-                            if (fileDataItem.mediaQualityAvailable.value) {
+                            if (fileDataItem.mediaQualityAvailable.value && fileDataItem.mediaQuality == null) {
                                 selectionModel.select(it)
                             }
                         }
@@ -145,10 +167,13 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.grouping)
                         bindSelected(fileDataItem.groupingProperty)
                         filter.selectedGroupingProperty.onChange {
-                            if (!mainViewModel.restrictedGroupings(fileDataItem.file).contains(it)) {
+                            val notRestricted = !mainViewModel.restrictedGroupings(fileDataItem.file).contains(it)
+                            if (notRestricted && fileDataItem.grouping == null) {
                                 selectionModel.select(it)
                             }
                         }
+
+                        isDisable = initGrouping != null
 
                         setCellFactory {
                             object : ListCell<Grouping>() {
