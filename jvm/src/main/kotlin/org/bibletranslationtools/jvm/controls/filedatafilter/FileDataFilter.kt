@@ -1,8 +1,11 @@
 package org.bibletranslationtools.jvm.controls.filedatafilter
 
+import io.reactivex.Observable
 import javafx.beans.property.SimpleListProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.event.ActionEvent
+import javafx.event.EventHandler
 import javafx.event.EventTarget
 import javafx.scene.control.Control
 import javafx.scene.control.Skin
@@ -44,6 +47,9 @@ class FileDataFilter : Control() {
     val groupingsProperty = SimpleListProperty<Grouping>()
     val selectedGroupingProperty = SimpleObjectProperty<Grouping>()
 
+    val onConfirmActionProperty = SimpleObjectProperty<EventHandler<ActionEvent>>()
+    var callbackObserver: Observable<Boolean>? = null
+
     private val userAgentStyleSheet = javaClass.getResource("/css/file-data-filter.css").toExternalForm()
 
     init {
@@ -60,6 +66,14 @@ class FileDataFilter : Control() {
 
     private fun initialize() {
         stylesheets.setAll(userAgentStyleSheet)
+    }
+
+    fun onConfirmAction(op: () -> Unit) {
+        onConfirmActionProperty.set(EventHandler { op.invoke() })
+    }
+
+    fun onConfirmCallback(answer: Boolean) {
+        callbackObserver = Observable.just(answer)
     }
 }
 
