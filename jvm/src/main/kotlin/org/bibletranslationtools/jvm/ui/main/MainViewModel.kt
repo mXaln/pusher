@@ -1,9 +1,12 @@
 package org.bibletranslationtools.jvm.ui.main
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleListProperty
+import javafx.scene.control.Alert
 import org.bibletranslationtools.common.audio.BttrChunk
 import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
@@ -24,6 +27,7 @@ import tornadofx.*
 import java.io.File
 import java.text.MessageFormat
 import java.util.regex.Pattern
+import io.reactivex.rxkotlin.toObservable as toRxObservable
 
 class MainViewModel : ViewModel() {
 
@@ -37,6 +41,7 @@ class MainViewModel : ViewModel() {
     val mediaQualities = MediaQuality.values().toList().toObservable()
     val groupings = Grouping.values().toList().toObservable()
 
+    val isProcessing = SimpleBooleanProperty(false)
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
 
     init {
@@ -45,34 +50,32 @@ class MainViewModel : ViewModel() {
     }
 
     fun onDropFiles(files: List<File>) {
-        files.forEach {
-            if (it.isDirectory) {
-                importFolder(it)
-            } else {
-                importFile(it)
-            }
-        }
+        isProcessing.set(true)
+        val filesToImport = prepareFilesToImport(files)
+        importFiles(filesToImport)
     }
-  
+
     fun upload() {
-        fileDataList
-            .forEach { fileDataItem ->
+        isProcessing.set(true)
+        fileDataList.toRxObservable()
+            .concatMap { fileDataItem ->
                 val fileData = FileDataMapper().toEntity(fileDataItem)
                 MakePath(fileData).build()
                     .flatMapCompletable { targetPath ->
                         val transferClient = FtpTransferClient(fileDataItem.file, targetPath)
                         TransferFile(transferClient).transfer()
                     }
+                    .andThen(Observable.just(fileDataItem))
                     .doOnError { emitErrorMessage(it, fileDataItem.file) }
-                    .subscribeOn(Schedulers.io())
-                    .observeOnFx()
-                    .toSingleDefault(true)
-                    .onErrorReturnItem(false)
-                    .subscribe { success ->
-                        if (success) {
-                            fileDataList.remove(fileDataItem)
-                        }
-                    }
+                    .onErrorResumeNext(Observable.empty())
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOnFx()
+            .buffer(Int.MAX_VALUE)
+            .subscribe {
+                fileDataList.removeAll(it)
+                isProcessing.set(false)
+                showSuccessDialog()
             }
     }
 
@@ -96,43 +99,31 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private fun importFile(file: File) {
-        if (file.isDirectory) return
-        ValidateFile(file).validate()
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
-            .doOnError { emitErrorMessage(it, file) }
-            .toSingleDefault(true)
-            .onErrorReturnItem(false)
-            .subscribe { success ->
-                if (success) {
-                    parseFileName(file)
-                }
+    private fun prepareFilesToImport(files: List<File>): List<File> {
+        val filesToImport = mutableListOf<File>()
+        files.forEach { file ->
+            file.walk().filter { it.isFile }.forEach {
+                filesToImport.add(it)
             }
-    }
-
-    private fun importFolder(folder: File) {
-        if (!folder.isDirectory) return
-
-        folder.walk().forEach {
-            importFile(it)
         }
+        return filesToImport
     }
 
-    private fun parseFileName(file: File) {
-        ParseFileName(file).parse()
+    private fun importFiles(files: List<File>) {
+        files.toRxObservable()
+            .concatMap { file ->
+                ValidateFile(file).validate()
+                    .andThen(ParseFileName(file).parse())
+                    .toObservable()
+                    .doOnError { emitErrorMessage(it, file) }
+                    .onErrorResumeNext(Observable.empty())
+            }
             .subscribeOn(Schedulers.io())
             .observeOnFx()
-            .subscribe { fileData, error ->
-                when {
-                    fileData != null -> {
-                        val fileDataItem = FileDataMapper().fromEntity(fileData)
-                        if (!fileDataList.contains(fileDataItem)) {
-                            fileDataList.add(fileDataItem)
-                        }
-                    }
-                    error != null -> emitErrorMessage(error, file)
-                }
+            .buffer(Int.MAX_VALUE)
+            .subscribe { fileData ->
+                fileDataList.setAll(fileData.map { FileDataMapper().fromEntity(it) })
+                isProcessing.set(false)
             }
     }
 
@@ -173,5 +164,15 @@ class MainViewModel : ViewModel() {
     private fun emitErrorMessage(error: Throwable, file: File) {
         val notImportedText = MessageFormat.format(messages["notImported"], file.name)
         snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
+    }
+
+    private fun showSuccessDialog() {
+        Alert(Alert.AlertType.INFORMATION).apply {
+            title = messages["successTitle"]
+            headerText = null
+            contentText = messages["uploadSuccessfull"]
+
+            show()
+        }
     }
 }

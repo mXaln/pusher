@@ -50,3 +50,7 @@
 .jfx-snackbar-action {
     -fx-text-fill: -wa-white;
 }
+
+.main__progress {
+    -fx-font-size: 1.8em;
+}
