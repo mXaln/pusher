@@ -121,9 +121,9 @@ class MainViewModel : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .buffer(Int.MAX_VALUE)
+            .doFinally { isProcessing.set(false) }
             .subscribe { fileData ->
                 fileDataList.setAll(fileData.map { FileDataMapper().fromEntity(it) })
-                isProcessing.set(false)
             }
     }
 
