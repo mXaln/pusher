@@ -72,9 +72,9 @@ class MainViewModel : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOnFx()
             .buffer(Int.MAX_VALUE)
+            .doFinally { isProcessing.set(false) }
             .subscribe {
                 fileDataList.removeAll(it)
-                isProcessing.set(false)
                 showSuccessDialog()
             }
     }
