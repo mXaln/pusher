@@ -12,7 +12,7 @@ class MakePathTest {
 
     @Test
     fun testCompressedMedia() {
-        val expected = "en/ulb/gen/1/CONTENTS/mp3/low/verse/en_ulb_gen_c01_v03_t01.mp3"
+        val expected = "en/ulb/gen/1/CONTENTS/mp3/low/verse/en_ulb_gen_c01_v03.mp3"
         val fileData = FileData(
             File("en_ulb_gen_c01_v03_t01.mp3"),
             "en",
@@ -34,7 +34,7 @@ class MakePathTest {
 
     @Test
     fun testUncompressedMedia() {
-        val expected = "en/ulb/gen/1/CONTENTS/wav/chunk/en_ulb_gen_c01_v03-05_t01.wav"
+        val expected = "en/ulb/gen/1/CONTENTS/wav/chunk/en_ulb_gen_c01_v03-05.wav"
         val fileData = FileData(
             File("en_ulb_gen_c01_v03-05_t01.wav"),
             "en",
@@ -56,7 +56,7 @@ class MakePathTest {
 
     @Test
     fun testContainerWithCompressedMedia() {
-        val expected = "en/ulb/gen/CONTENTS/tr/mp3/hi/verse/en_ulb_gen_verse.tr"
+        val expected = "en/ulb/gen/CONTENTS/tr/mp3/hi/verse/en_ulb_gen.tr"
         val fileData = FileData(
             File("en_ulb_gen_verse.tr"),
             "en",
