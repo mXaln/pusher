@@ -1,0 +1,94 @@
+plugins {
+    id 'org.openjfx.javafxplugin' version "$javafxPluginVer"
+    id 'com.github.johnrengelman.shadow' version "$shadowPluginVer"
+}
+
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'edu.sc.seis.launch4j'
+
+javafx {
+    version = '11'
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+version = 1.0
+
+repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://jitpack.io' }
+}
+
+application {
+    mainClassName = "org.bibletranslationtools.jvm.MainAppKt"
+}
+
+dependencies {
+    // TornadoFX
+    implementation "no.tornado:tornadofx:$tornadofxVer"
+
+    // JFoenix
+    implementation "com.jfoenix:jfoenix:$jfoenixVer"
+
+    // OpenJFX cross-platform fat jar dependencies
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafxVer:mac"
+
+    // Ikonli
+    implementation "org.kordamp.ikonli:ikonli-javafx:$ikonliVer"
+    implementation "org.kordamp.ikonli:ikonli-material-pack:$ikonliVer"
+
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxkotlinVer"
+    implementation "com.github.thomasnield:rxkotlinfx:$rxkotlinfxVer"
+
+    // Jackson
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-csv:$jacksonDataFormat"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
+
+    implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
+
+    // Apache network
+    implementation "commons-net:commons-net:$commonsnetVer"
+
+    implementation project(':common')
+
+    // Testing
+    testImplementation "junit:junit:$junitVer"
+    testImplementation "org.mockito:mockito-core:$mockitoVer"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVer"
+}
+
+// tell gradle what to put in the jar
+shadowJar {
+    archiveFileName = "${rootProject.name}.jar"
+    mergeServiceFiles()
+    manifest {
+        attributes(
+                'Main-Class': "org.bibletranslationtools.jvm.MainAppKt"
+        )
+    }
+}
+
+task copyJre(type: Copy) {
+    if (project.hasProperty("jrePath")) {
+        from jrePath
+        into "${buildDir}/launch4j/jre"
+    }
+}
+
+launch4j {
+    outfile = "${rootProject.name}.exe"
+    mainClassName = project.mainClassName
+    bundledJrePath = "./jre"
+    bundledJre64Bit = true
+    jdkPreference = 'jdkOnly'
+    icon = "${projectDir}/launcher.ico"
+    jar = "${buildDir}/libs/${rootProject.name}.jar"
+    productName = rootProject.name
+    fileDescription = rootProject.name
+}
+
+project.tasks.createExe.dependsOn copyJre
+project.tasks.createExe.dependsOn shadowJar
