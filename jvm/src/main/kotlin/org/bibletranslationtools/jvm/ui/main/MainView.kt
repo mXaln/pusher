@@ -33,9 +33,22 @@ class MainView : View() {
         createSnackBar(this)
 
         vbox {
+            alignment = Pos.CENTER
+
+            addClass("main__progress")
+            progressindicator()
+            label(messages["processing"])
+
+            visibleWhen(viewModel.isProcessing)
+        }
+
+        vbox {
             addClass("main__drop-files")
 
-            visibleWhen(viewModel.fileDataListProperty.emptyProperty())
+            visibleWhen {
+                viewModel.fileDataListProperty.emptyProperty()
+                    .and(viewModel.isProcessing.not())
+            }
 
             label(messages["dropFiles"])
 
@@ -46,7 +59,10 @@ class MainView : View() {
         vbox {
             alignment = Pos.CENTER
 
-            hiddenWhen(viewModel.fileDataListProperty.emptyProperty())
+            hiddenWhen {
+                viewModel.fileDataListProperty.emptyProperty()
+                    .or(viewModel.isProcessing)
+            }
 
             filter.apply {
                 maxWidthProperty().bind(primaryStage.widthProperty())

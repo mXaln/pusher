@@ -2,7 +2,7 @@ package org.bibletranslationtools.common.usecases
 
 import io.reactivex.Single
 import org.bibletranslationtools.common.data.FileData
-import java.io.File
+import java.util.regex.Pattern
 
 class MakePath(private val fileData: FileData) {
 
@@ -10,7 +10,7 @@ class MakePath(private val fileData: FileData) {
         private const val CONTENTS = "CONTENTS"
     }
 
-    private val filename = normalizeFileName(fileData.file)
+    private val filename = normalizeFileName()
 
     fun build(): Single<String> {
         return Single.fromCallable {
@@ -116,8 +116,36 @@ class MakePath(private val fileData: FileData) {
         }
     }
 
-    private fun normalizeFileName(file: File): String {
-        val filenameWithoutExtension = file.nameWithoutExtension.toLowerCase()
-        return "$filenameWithoutExtension.${fileData.extension}"
+    private fun normalizeFileName(): String {
+        val filename = if (hasVerse()) {
+            val filenameWithoutExtension = fileData.file.nameWithoutExtension
+                .toLowerCase()
+
+            filenameWithoutExtension
+        } else {
+            val str = StringBuilder()
+            str.append("${fileData.language}_${fileData.resourceType}")
+
+            if (!fileData.book.isNullOrBlank()) {
+                str.append("_${fileData.book}")
+            }
+
+            if (fileData.chapter != null) {
+                str.append("_${fileData.chapter}")
+            }
+
+            str.toString()
+        }
+
+        return filename
+            .replace(Regex("_t([\\d]{1,2})"), "")
+            .plus(".${fileData.extension}")
+    }
+
+    private fun hasVerse(): Boolean {
+        val verseRegex = "_(v[\\d]{1,3}(-[\\d]{1,3})?)"
+        val pattern = Pattern.compile(verseRegex, Pattern.CASE_INSENSITIVE)
+        val matcher = pattern.matcher(fileData.file.nameWithoutExtension)
+        return matcher.find()
     }
 }
