@@ -19,6 +19,9 @@ plugins {
     id 'io.gitlab.arturbosch.detekt' version "$detektPluginVer"
 }
 
+group 'org.bibletranslationtools'
+version '0.0.2'
+
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
 repositories {
@@ -42,7 +45,6 @@ tasks.withType(io.gitlab.arturbosch.detekt.Detekt) {
     exclude("**/resources/**")
     exclude("**/build/**")
 }
-
 
 subprojects {
     repositories {
