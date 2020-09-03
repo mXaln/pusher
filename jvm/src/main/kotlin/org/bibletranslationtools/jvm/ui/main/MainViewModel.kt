@@ -79,20 +79,23 @@ class MainViewModel : ViewModel() {
             }
     }
 
-    fun restrictedGroupings(file: File): List<Grouping> {
+    fun restrictedGroupings(item: FileDataItem): List<Grouping> {
         val groupings = Grouping.values().toList()
         return when {
-            isChunkOrVerseFile(file) -> {
+            item.isContainer -> {
+                groupings.filter { it != Grouping.VERSE }
+            }
+            isChunkOrVerseFile(item.file) -> {
                 val bttrChunk = BttrChunk()
                 val wavMetadata = WavMetadata(listOf(bttrChunk))
-                WavFile(file, wavMetadata)
+                WavFile(item.file, wavMetadata)
                 if (bttrChunk.metadata.mode == Grouping.CHUNK.grouping) {
                     groupings.filter { it != Grouping.CHUNK }
                 } else {
                     groupings.filter { it != Grouping.VERSE }
                 }
             }
-            isChapterFile(file) -> {
+            isChapterFile(item.file) -> {
                 groupings.filter { it == Grouping.BOOK }
             }
             else -> listOf()
@@ -123,7 +126,9 @@ class MainViewModel : ViewModel() {
             .buffer(Int.MAX_VALUE)
             .doFinally { isProcessing.set(false) }
             .subscribe { fileData ->
-                fileDataList.setAll(fileData.map { FileDataMapper().fromEntity(it) })
+                fileData
+                    .map { FileDataMapper().fromEntity(it) }
+                    .forEach { if (!fileDataList.contains(it)) fileDataList.add(it) }
             }
     }
 
