@@ -167,7 +167,7 @@ class FileDataCell(
                         selectionModel.select(fileDataItem.grouping)
                         bindSelected(fileDataItem.groupingProperty)
                         filter.selectedGroupingProperty.onChange {
-                            val notRestricted = !mainViewModel.restrictedGroupings(fileDataItem.file).contains(it)
+                            val notRestricted = !mainViewModel.restrictedGroupings(fileDataItem).contains(it)
                             if (notRestricted && fileDataItem.grouping == null) {
                                 selectionModel.select(it)
                             }
@@ -180,7 +180,7 @@ class FileDataCell(
                                 override fun updateItem(item: Grouping?, empty: Boolean) {
                                     super.updateItem(item, empty)
                                     text = item?.toString() ?: ""
-                                    if (mainViewModel.restrictedGroupings(fileDataItem.file).contains(item)) {
+                                    if (mainViewModel.restrictedGroupings(fileDataItem).contains(item)) {
                                         isDisable = true
                                         opacity = 0.5
                                     }
