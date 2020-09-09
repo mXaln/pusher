@@ -92,6 +92,8 @@ class MainView : View() {
                         onConfirmCallback(answer)
                     }
                 }
+
+                setFilterChangeListeners()
             }
 
             add(filter)
@@ -104,7 +106,7 @@ class MainView : View() {
                 maxCellsInRow = 1
 
                 cellCache { item ->
-                    filedatacell(item, filter)
+                    filedatacell(item)
                 }
 
                 onDragOver = onDragOverHandler()
@@ -183,6 +185,79 @@ class MainView : View() {
             when (result.get()) {
                 yesButton -> op.invoke(true)
                 noButton -> op.invoke(false)
+            }
+        }
+    }
+
+    private fun setFilterChangeListeners() {
+        filter.selectedLanguageProperty.onChange {
+            it?.let { language ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.initLanguage == null) {
+                        fileDataItem.language = language
+                    }
+                }
+            }
+        }
+
+        filter.selectedResourceTypeProperty.onChange {
+            it?.let { resourceType ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.initResourceType == null) {
+                        fileDataItem.resourceType = resourceType
+                    }
+                }
+            }
+        }
+
+        filter.selectedBookProperty.onChange {
+            it?.let { book ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.initBook == null) {
+                        fileDataItem.book = book
+                    }
+                }
+            }
+        }
+
+        filter.chapterProperty.onChange {
+            it?.let { chapter ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.initChapter.isNullOrEmpty()) {
+                        fileDataItem.chapter = chapter
+                    }
+                }
+            }
+        }
+
+        filter.selectedMediaExtensionProperty.onChange {
+            it?.let { mediaExtension ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.mediaExtensionAvailable.value && fileDataItem.initMediaExtension == null) {
+                        fileDataItem.mediaExtension = mediaExtension
+                    }
+                }
+            }
+        }
+
+        filter.selectedMediaQualityProperty.onChange {
+            it?.let { mediaQuality ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    if (fileDataItem.mediaQualityAvailable.value && fileDataItem.initMediaQuality == null) {
+                        fileDataItem.mediaQuality = mediaQuality
+                    }
+                }
+            }
+        }
+
+        filter.selectedGroupingProperty.onChange {
+            it?.let { grouping ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    val notRestricted = !viewModel.restrictedGroupings(fileDataItem).contains(grouping)
+                    if (notRestricted && fileDataItem.initGrouping == null) {
+                        fileDataItem.grouping = grouping
+                    }
+                }
             }
         }
     }

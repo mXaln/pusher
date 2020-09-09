@@ -18,25 +18,32 @@ class FileDataItem(data: FileData) {
 
     val file = data.file
 
-    val languageProperty = SimpleStringProperty(data.language)
-    var language by languageProperty
+    val initLanguage = data.language
+    val languageProperty = SimpleStringProperty(initLanguage)
+    var language: String? by languageProperty
 
-    val resourceTypeProperty = SimpleObjectProperty<ResourceType>(data.resourceType)
+    val initResourceType = data.resourceType
+    val resourceTypeProperty = SimpleObjectProperty<ResourceType>(initResourceType)
     var resourceType by resourceTypeProperty
 
-    val bookProperty = SimpleStringProperty(data.book)
+    val initBook = data.book
+    val bookProperty = SimpleStringProperty(initBook)
     var book by bookProperty
 
-    val chapterProperty = SimpleStringProperty(data.chapter?.toString())
+    val initChapter = data.chapter?.toString()
+    val chapterProperty = SimpleStringProperty(initChapter)
     var chapter by chapterProperty
 
-    val mediaExtensionProperty = SimpleObjectProperty<MediaExtension>(data.mediaExtension)
+    val initMediaExtension = data.mediaExtension
+    val mediaExtensionProperty = SimpleObjectProperty<MediaExtension>(initMediaExtension)
     var mediaExtension by mediaExtensionProperty
 
-    val mediaQualityProperty = SimpleObjectProperty<MediaQuality>(data.mediaQuality)
+    val initMediaQuality = data.mediaQuality
+    val mediaQualityProperty = SimpleObjectProperty<MediaQuality>(initMediaQuality)
     var mediaQuality by mediaQualityProperty
 
-    val groupingProperty = SimpleObjectProperty<Grouping>(data.grouping)
+    val initGrouping = data.grouping
+    val groupingProperty = SimpleObjectProperty<Grouping>(initGrouping)
     var grouping by groupingProperty
 
     val isContainerProperty = SimpleBooleanProperty(data.isContainer)
