@@ -3,6 +3,8 @@ package org.bibletranslationtools.jvm.ui.main
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXSnackbar
 import com.jfoenix.controls.JFXSnackbarLayout
+import javafx.beans.binding.BooleanExpression
+import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -14,8 +16,11 @@ import javafx.scene.layout.Priority
 import javafx.util.Duration
 import org.bibletranslationtools.assets.AppResources
 import org.bibletranslationtools.jvm.controls.filedatafilter.filedatafilter
+import org.bibletranslationtools.jvm.ui.FileDataItem
 import org.bibletranslationtools.jvm.ui.filedatacell.filedatacell
 import tornadofx.*
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 class MainView : View() {
     private val viewModel: MainViewModel by inject()
@@ -190,72 +195,64 @@ class MainView : View() {
     }
 
     private fun setFilterChangeListeners() {
-        filter.selectedLanguageProperty.onChange {
-            it?.let { language ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.initLanguage == null) {
-                        fileDataItem.language = language
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.selectedLanguageProperty,
+            FileDataItem::initLanguage,
+            FileDataItem::language
+        )
 
-        filter.selectedResourceTypeProperty.onChange {
-            it?.let { resourceType ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.initResourceType == null) {
-                        fileDataItem.resourceType = resourceType
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.selectedResourceTypeProperty,
+            FileDataItem::initResourceType,
+            FileDataItem::resourceType
+        )
 
-        filter.selectedBookProperty.onChange {
-            it?.let { book ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.initBook == null) {
-                        fileDataItem.book = book
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.selectedBookProperty,
+            FileDataItem::initBook,
+            FileDataItem::book
+        )
 
-        filter.chapterProperty.onChange {
-            it?.let { chapter ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.initChapter.isNullOrEmpty()) {
-                        fileDataItem.chapter = chapter
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.chapterProperty,
+            FileDataItem::initChapter,
+            FileDataItem::chapter
+        )
 
-        filter.selectedMediaExtensionProperty.onChange {
-            it?.let { mediaExtension ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.mediaExtensionAvailable.value && fileDataItem.initMediaExtension == null) {
-                        fileDataItem.mediaExtension = mediaExtension
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.selectedMediaExtensionProperty,
+            FileDataItem::initMediaExtension,
+            FileDataItem::mediaExtension,
+            FileDataItem::mediaExtensionAvailable
+        )
 
-        filter.selectedMediaQualityProperty.onChange {
-            it?.let { mediaQuality ->
-                viewModel.fileDataList.forEach { fileDataItem ->
-                    if (fileDataItem.mediaQualityAvailable.value && fileDataItem.initMediaQuality == null) {
-                        fileDataItem.mediaQuality = mediaQuality
-                    }
-                }
-            }
-        }
+        setPropertyListener(
+            filter.selectedMediaQualityProperty,
+            FileDataItem::initMediaQuality,
+            FileDataItem::mediaQuality,
+            FileDataItem::mediaQualityAvailable
+        )
 
-        filter.selectedGroupingProperty.onChange {
-            it?.let { grouping ->
+        setPropertyListener(
+            filter.selectedGroupingProperty,
+            FileDataItem::initGrouping,
+            FileDataItem::grouping
+        )
+    }
+
+    private fun <T> setPropertyListener(
+        property: Property<T>,
+        initParam: KProperty1<FileDataItem, T?>,
+        targetParam: KMutableProperty1<FileDataItem, T?>,
+        availableParam: KProperty1<FileDataItem, BooleanExpression>? = null
+    ) {
+        property.onChange {
+            it?.let { prop ->
                 viewModel.fileDataList.forEach { fileDataItem ->
-                    val notRestricted = !viewModel.restrictedGroupings(fileDataItem).contains(grouping)
-                    if (notRestricted && fileDataItem.initGrouping == null) {
-                        fileDataItem.grouping = grouping
+                    val initValue = initParam.get(fileDataItem)
+                    val available = availableParam?.get(fileDataItem)?.value ?: true
+                    if (available && initValue == null) {
+                        targetParam.set(fileDataItem, prop)
                     }
                 }
             }
