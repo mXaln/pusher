@@ -7,7 +7,6 @@ import javafx.scene.control.ListCell
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
 import org.bibletranslationtools.assets.AppResources
-import org.bibletranslationtools.common.data.FileData
 import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
@@ -16,7 +15,6 @@ import org.bibletranslationtools.jvm.controls.filedatafilter.MAX_CHAPTER_LENGTH
 import org.bibletranslationtools.jvm.ui.FileDataItem
 import org.bibletranslationtools.jvm.ui.main.MainViewModel
 import tornadofx.*
-import java.io.File
 
 class FileDataCell(private val fileDataItem: FileDataItem) : VBox() {
 
