@@ -56,14 +56,16 @@ class ParseFileName(private val file: File) {
 
     fun parse(): Single<FileData> {
         return Single.fromCallable {
-            FileData(file).apply {
-                language = findLanguage()
-                resourceType = findResourceType()
-                book = findBook()
-                chapter = findChapter()
-                mediaQuality = findQuality()
-                grouping = findGrouping()
-            }
+            FileData(
+                file,
+                findLanguage(),
+                findResourceType(),
+                findBook(),
+                findChapter(),
+                null,
+                findQuality(),
+                findGrouping()
+            )
         }
     }
 
