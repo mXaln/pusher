@@ -55,6 +55,28 @@ class MakePathTest {
     }
 
     @Test
+    fun testChapterFile() {
+        val expected = "en/ulb/gen/1/CONTENTS/mp3/low/chapter/en_ulb_gen_c1.mp3"
+        val fileData = FileData(
+            File("en_ulb_gen_c01.mp3"),
+            "en",
+            ResourceType.ULB,
+            "gen",
+            1,
+            null,
+            MediaQuality.LOW,
+            Grouping.CHAPTER
+        )
+
+        val result = MakePath(fileData).build().test()
+
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
+
+    }
+
+    @Test
     fun testContainerWithCompressedMedia() {
         val expected = "en/ulb/gen/CONTENTS/tr/mp3/hi/verse/en_ulb_gen.tr"
         val fileData = FileData(
