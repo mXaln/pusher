@@ -242,17 +242,17 @@ class MainView : View() {
 
     private fun <T> setPropertyListener(
         property: Property<T>,
-        initParam: KProperty1<FileDataItem, T?>,
-        targetParam: KMutableProperty1<FileDataItem, T?>,
-        availableParam: KProperty1<FileDataItem, BooleanExpression>? = null
+        initProp: KProperty1<FileDataItem, T?>,
+        targetProp: KMutableProperty1<FileDataItem, T?>,
+        availableProp: KProperty1<FileDataItem, BooleanExpression>? = null
     ) {
         property.onChange {
             it?.let { prop ->
                 viewModel.fileDataList.forEach { fileDataItem ->
-                    val initValue = initParam.get(fileDataItem)
-                    val available = availableParam?.get(fileDataItem)?.value ?: true
+                    val initValue = initProp.get(fileDataItem)
+                    val available = availableProp?.get(fileDataItem)?.value ?: true
                     if (available && initValue == null) {
-                        targetParam.set(fileDataItem, prop)
+                        targetProp.set(fileDataItem, prop)
                     }
                 }
             }
