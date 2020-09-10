@@ -3,6 +3,8 @@ package org.bibletranslationtools.jvm.ui.main
 import com.jfoenix.controls.JFXButton
 import com.jfoenix.controls.JFXSnackbar
 import com.jfoenix.controls.JFXSnackbarLayout
+import javafx.beans.binding.BooleanExpression
+import javafx.beans.property.Property
 import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
@@ -14,8 +16,11 @@ import javafx.scene.layout.Priority
 import javafx.util.Duration
 import org.bibletranslationtools.assets.AppResources
 import org.bibletranslationtools.jvm.controls.filedatafilter.filedatafilter
+import org.bibletranslationtools.jvm.ui.FileDataItem
 import org.bibletranslationtools.jvm.ui.filedatacell.filedatacell
 import tornadofx.*
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty1
 
 class MainView : View() {
     private val viewModel: MainViewModel by inject()
@@ -92,6 +97,8 @@ class MainView : View() {
                         onConfirmCallback(answer)
                     }
                 }
+
+                setFilterChangeListeners()
             }
 
             add(filter)
@@ -104,7 +111,7 @@ class MainView : View() {
                 maxCellsInRow = 1
 
                 cellCache { item ->
-                    filedatacell(item, filter)
+                    filedatacell(item)
                 }
 
                 onDragOver = onDragOverHandler()
@@ -183,6 +190,71 @@ class MainView : View() {
             when (result.get()) {
                 yesButton -> op.invoke(true)
                 noButton -> op.invoke(false)
+            }
+        }
+    }
+
+    private fun setFilterChangeListeners() {
+        setPropertyListener(
+            filter.selectedLanguageProperty,
+            FileDataItem::initLanguage,
+            FileDataItem::language
+        )
+
+        setPropertyListener(
+            filter.selectedResourceTypeProperty,
+            FileDataItem::initResourceType,
+            FileDataItem::resourceType
+        )
+
+        setPropertyListener(
+            filter.selectedBookProperty,
+            FileDataItem::initBook,
+            FileDataItem::book
+        )
+
+        setPropertyListener(
+            filter.chapterProperty,
+            FileDataItem::initChapter,
+            FileDataItem::chapter
+        )
+
+        setPropertyListener(
+            filter.selectedMediaExtensionProperty,
+            FileDataItem::initMediaExtension,
+            FileDataItem::mediaExtension,
+            FileDataItem::mediaExtensionAvailable
+        )
+
+        setPropertyListener(
+            filter.selectedMediaQualityProperty,
+            FileDataItem::initMediaQuality,
+            FileDataItem::mediaQuality,
+            FileDataItem::mediaQualityAvailable
+        )
+
+        setPropertyListener(
+            filter.selectedGroupingProperty,
+            FileDataItem::initGrouping,
+            FileDataItem::grouping
+        )
+    }
+
+    private fun <T> setPropertyListener(
+        property: Property<T>,
+        initProp: KProperty1<FileDataItem, T?>,
+        targetProp: KMutableProperty1<FileDataItem, T?>,
+        availableProp: KProperty1<FileDataItem, BooleanExpression>? = null
+    ) {
+        property.onChange {
+            it?.let { prop ->
+                viewModel.fileDataList.forEach { fileDataItem ->
+                    val initValue = initProp.get(fileDataItem)
+                    val available = availableProp?.get(fileDataItem)?.value ?: true
+                    if (available && initValue == null) {
+                        targetProp.set(fileDataItem, prop)
+                    }
+                }
             }
         }
     }

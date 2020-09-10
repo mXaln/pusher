@@ -131,7 +131,7 @@ class MakePath(private val fileData: FileData) {
             }
 
             if (fileData.chapter != null) {
-                str.append("_${fileData.chapter}")
+                str.append("_c${fileData.chapter}")
             }
 
             str.toString()

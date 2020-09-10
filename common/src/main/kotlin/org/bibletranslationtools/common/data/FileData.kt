@@ -7,13 +7,13 @@ import java.io.File
 
 data class FileData(
     val file: File,
-    var language: String? = null,
-    var resourceType: ResourceType? = null,
-    var book: String? = null,
-    var chapter: Int? = null,
-    var mediaExtension: MediaExtension? = null,
-    var mediaQuality: MediaQuality? = null,
-    var grouping: Grouping? = null
+    val language: String? = null,
+    val resourceType: ResourceType? = null,
+    val book: String? = null,
+    val chapter: Int? = null,
+    val mediaExtension: MediaExtension? = null,
+    val mediaQuality: MediaQuality? = null,
+    val grouping: Grouping? = null
 ) {
     val extension = MediaExtensions.of(file.extension)
 
