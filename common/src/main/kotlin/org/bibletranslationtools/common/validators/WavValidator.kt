@@ -46,6 +46,10 @@ class WavValidator(private val file: File) : IValidator {
                 }
             }
             isChapter() -> {
+                val bttrChunk = BttrChunk()
+                val wavMetadata = WavMetadata(listOf(bttrChunk))
+                WavFile(file, wavMetadata)
+
                 if (!validateChapterFileName()) {
                     throw InvalidWavFileException("Chapter filename is incorrect")
                 }
