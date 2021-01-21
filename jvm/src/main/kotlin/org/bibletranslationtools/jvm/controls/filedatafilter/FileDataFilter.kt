@@ -22,30 +22,30 @@ class FileDataFilter : Control() {
 
     val languageLabelProperty = SimpleStringProperty()
     val languagesProperty = SimpleListProperty<String>()
-    val selectedLanguageProperty = SimpleStringProperty()
+    val selectedLanguageProperty = SimpleObjectProperty<String?>()
 
     val resourceTypeLabelProperty = SimpleStringProperty()
     val resourceTypesProperty = SimpleListProperty<ResourceType>()
-    val selectedResourceTypeProperty = SimpleObjectProperty<ResourceType>()
+    val selectedResourceTypeProperty = SimpleObjectProperty<ResourceType?>()
 
     val bookLabelProperty = SimpleStringProperty()
     val booksProperty = SimpleListProperty<String>()
-    val selectedBookProperty = SimpleStringProperty()
+    val selectedBookProperty = SimpleObjectProperty<String?>()
 
     val chapterLabelProperty = SimpleStringProperty()
-    val chapterProperty = SimpleStringProperty()
+    val chapterProperty = SimpleObjectProperty<String?>()
 
     val mediaExtensionLabelProperty = SimpleStringProperty()
     val mediaExtensionsProperty = SimpleListProperty<MediaExtension>()
-    val selectedMediaExtensionProperty = SimpleObjectProperty<MediaExtension>()
+    val selectedMediaExtensionProperty = SimpleObjectProperty<MediaExtension?>()
 
     val mediaQualityLabelProperty = SimpleStringProperty()
     val mediaQualitiesProperty = SimpleListProperty<MediaQuality>()
-    val selectedMediaQualityProperty = SimpleObjectProperty<MediaQuality>()
+    val selectedMediaQualityProperty = SimpleObjectProperty<MediaQuality?>()
 
     val groupingLabelProperty = SimpleStringProperty()
     val groupingsProperty = SimpleListProperty<Grouping>()
-    val selectedGroupingProperty = SimpleObjectProperty<Grouping>()
+    val selectedGroupingProperty = SimpleObjectProperty<Grouping?>()
 
     val onConfirmActionProperty = SimpleObjectProperty<EventHandler<ActionEvent>>()
     var callbackObserver: Observable<Boolean>? = null
@@ -74,6 +74,16 @@ class FileDataFilter : Control() {
 
     fun onConfirmCallback(answer: Boolean) {
         callbackObserver = Observable.just(answer)
+    }
+
+    fun reset() {
+        selectedLanguageProperty.set(null)
+        selectedResourceTypeProperty.set(null)
+        selectedBookProperty.set(null)
+        chapterProperty.set(null)
+        selectedMediaExtensionProperty.set(null)
+        selectedMediaQualityProperty.set(null)
+        selectedGroupingProperty.set(null)
     }
 }
 

@@ -71,6 +71,7 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
     private fun initialize() {
         initializeControls()
         initializeActions()
+        bindFilterSelections()
     }
 
     private fun initializeControls() {
@@ -100,15 +101,21 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
 
     private fun initializeActions() {
         languagesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedLanguageProperty, languagesList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedLanguageProperty, languagesList, old, new)
+            }
         }
 
         resourceTypesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedResourceTypeProperty, resourceTypesList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedResourceTypeProperty, resourceTypesList, old, new)
+            }
         }
 
         booksList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedBookProperty, booksList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedBookProperty, booksList, old, new)
+            }
         }
 
         chapter.setOnAction {
@@ -118,24 +125,61 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
                     filter.chapterProperty.value = chapter.text
                 } else {
                     chapter.text = null
+                    filter.chapterProperty.value = null
                 }
             }
         }
 
         mediaExtensionsList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedMediaExtensionProperty, mediaExtensionsList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedMediaExtensionProperty, mediaExtensionsList, old, new)
+            }
         }
 
         mediaQualitiesList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedMediaQualityProperty, mediaQualitiesList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedMediaQualityProperty, mediaQualitiesList, old, new)
+            }
         }
 
         groupingsList.selectionModel.selectedItemProperty().addListener { _, old, new ->
-            itemSelectionAction(filter.selectedGroupingProperty, groupingsList, old, new)
+            if (new != null) {
+                itemSelectionAction(filter.selectedGroupingProperty, groupingsList, old, new)
+            }
         }
     }
 
-    private fun <T> itemSelectionAction(selected: Property<T>, dropdownList: ComboBox<T>, old: T, new: T) {
+    private fun bindFilterSelections() {
+        filter.selectedLanguageProperty.onChange {
+            languagesList.selectionModel.select(it)
+        }
+
+        filter.selectedResourceTypeProperty.onChange {
+            resourceTypesList.selectionModel.select(it)
+        }
+
+        filter.selectedBookProperty.onChange {
+            booksList.selectionModel.select(it)
+        }
+
+        filter.chapterProperty.onChange {
+            chapter.text = it
+        }
+
+        filter.selectedMediaExtensionProperty.onChange {
+            mediaExtensionsList.selectionModel.select(it)
+        }
+
+        filter.selectedMediaQualityProperty.onChange {
+            mediaQualitiesList.selectionModel.select(it)
+        }
+
+        filter.selectedGroupingProperty.onChange {
+            groupingsList.selectionModel.select(it)
+        }
+    }
+
+    private fun <T> itemSelectionAction(selected: Property<T?>, dropdownList: ComboBox<T>, old: T?, new: T?) {
         if (!isSelectionChanging) {
             isSelectionChanging = true
             filter.onConfirmActionProperty.value.handle(ActionEvent())
@@ -146,6 +190,7 @@ class FileDataFilterSkin(private val filter: FileDataFilter) : SkinBase<FileData
                 } else {
                     runLater {
                         dropdownList.selectionModel.select(old)
+                        selected.value = old
                         isSelectionChanging = false
                     }
                 }

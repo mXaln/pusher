@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.layout.Priority
 import javafx.util.Duration
 import org.bibletranslationtools.assets.AppResources
+import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.jvm.controls.filedatafilter.filedatafilter
 import org.bibletranslationtools.jvm.ui.FileDataItem
 import org.bibletranslationtools.jvm.ui.filedatacell.filedatacell
@@ -99,6 +100,12 @@ class MainView : View() {
                 }
 
                 setFilterChangeListeners()
+
+                viewModel.uploadObservable.subscribe {
+                    if (it) {
+                        reset()
+                    }
+                }
             }
 
             add(filter)
@@ -110,8 +117,10 @@ class MainView : View() {
                 cellWidthProperty.bind(this@datagrid.widthProperty().minus(35.0))
                 maxCellsInRow = 1
 
-                cellCache { item ->
-                    filedatacell(item)
+                cellFormat { item ->
+                    graphic = cache {
+                        filedatacell(item)
+                    }
                 }
 
                 onDragOver = onDragOverHandler()
@@ -159,11 +168,7 @@ class MainView : View() {
         viewModel.snackBarObservable.subscribe { message ->
             snackBar.enqueue(
                 JFXSnackbar.SnackbarEvent(
-                    JFXSnackbarLayout(
-                        message,
-                        messages["ok"],
-                        EventHandler { snackBar.close() }
-                    ),
+                    JFXSnackbarLayout(message, messages["ok"]) { snackBar.close() },
                     Duration.INDEFINITE,
                     null
                 )
@@ -252,7 +257,14 @@ class MainView : View() {
                     val initValue = initProp.get(fileDataItem)
                     val available = availableProp?.get(fileDataItem)?.value ?: true
                     if (available && initValue == null) {
-                        targetProp.set(fileDataItem, prop)
+                        val isGrouping = prop is Grouping
+                        val groupingAvailable = isGrouping &&
+                                !viewModel.restrictedGroupings(fileDataItem)
+                                    .contains(prop as Grouping)
+
+                        if (!isGrouping || groupingAvailable) {
+                            targetProp.set(fileDataItem, prop)
+                        }
                     }
                 }
             }
