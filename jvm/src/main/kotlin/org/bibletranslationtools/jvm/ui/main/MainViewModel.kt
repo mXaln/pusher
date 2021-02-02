@@ -12,6 +12,7 @@ import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
+import org.bibletranslationtools.common.usecases.ProcessOratureFile
 import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
 import org.bibletranslationtools.common.usecases.TransferFile
@@ -25,6 +26,7 @@ import org.wycliffeassociates.otter.common.audio.wav.WavFile
 import org.wycliffeassociates.otter.common.audio.wav.WavMetadata
 import tornadofx.*
 import java.io.File
+import java.io.IOException
 import java.text.MessageFormat
 import java.util.regex.Pattern
 import io.reactivex.rxkotlin.toObservable as toRxObservable
@@ -107,8 +109,19 @@ class MainViewModel : ViewModel() {
     private fun prepareFilesToImport(files: List<File>): List<File> {
         val filesToImport = mutableListOf<File>()
         files.forEach { file ->
+            // get files under a directory
             file.walk().filter { it.isFile }.forEach {
                 filesToImport.add(it)
+            }
+            if (file.extension == "zip") {
+                try {
+                    val extractedFiles = ProcessOratureFile(file).extractAudio()
+                    filesToImport.addAll(extractedFiles)
+                } catch (ex: IOException) {
+                    
+                } finally {
+                    filesToImport.remove(file)
+                }
             }
         }
         return filesToImport
