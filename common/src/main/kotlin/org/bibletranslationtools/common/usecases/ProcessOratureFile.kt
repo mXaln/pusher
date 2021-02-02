@@ -55,13 +55,14 @@ class ProcessOratureFile(private val file: File) {
         val zipFile = ZipFile(file)
         val manifestEntry = zipFile.getEntry(manifestName) ?: return false
 
-        try {
+        return try {
             val mapper = ObjectMapper(YAMLFactory())
-            val manifest: Manifest =
-                    mapper.readValue(zipFile.getInputStream(manifestEntry))
-            return manifest.dublinCore.creator == "Orature"
+            val manifest: Manifest = mapper.readValue(
+                    zipFile.getInputStream(manifestEntry)
+            )
+            manifest.dublinCore.creator == "Orature"
         } catch (ex: Exception) {
-            return false
+            false
         }
     }
 }
