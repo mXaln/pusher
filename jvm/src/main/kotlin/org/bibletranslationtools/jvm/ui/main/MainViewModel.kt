@@ -118,7 +118,7 @@ class MainViewModel : ViewModel() {
                     val extractedFiles = ProcessOratureFile(file).extractAudio()
                     filesToImport.addAll(extractedFiles)
                 } catch (ex: IOException) {
-                    
+                    // TODO: emit error
                 } finally {
                     filesToImport.remove(file)
                 }

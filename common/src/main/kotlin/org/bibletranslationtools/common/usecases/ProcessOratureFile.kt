@@ -10,8 +10,12 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 
+/**
+  *  @throws IOException if the file passed into constructor is not from Orature
+ */
 class ProcessOratureFile(private val file: File) {
     private val manifestName = "manifest.yaml"
+    private val creatorName = "Orature"
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private class Manifest(
@@ -25,12 +29,13 @@ class ProcessOratureFile(private val file: File) {
             var creator: String
     )
 
-    @Throws(IOException::class)
-    fun extractAudio(): List<File> {
-        // check if  orature file
+    init {
         if (!isOrature()) throw IOException("Invalid Orature file.")
+    }
 
+    fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
+
         val zipFile = ZipFile(file)
         zipFile.entries().iterator().forEach { entry ->
             val fileEntry = File(entry.name)
@@ -39,19 +44,19 @@ class ProcessOratureFile(private val file: File) {
                     fileEntry.extension == MediaExtension.WAV.toString()
             ) {
                 val destFile = tempDir.resolve(fileEntry.name)
+                destFile.deleteOnExit()
                 zipFile.getInputStream(entry).buffered().use { input ->
                     destFile.outputStream().buffered().use { output ->
                         output.write(input.readBytes())
                     }
                 }
-                destFile.deleteOnExit()
             }
         }
         println(tempDir)
         return tempDir.listFiles()?.toList() ?: listOf()
     }
 
-    fun isOrature(): Boolean {
+    private fun isOrature(): Boolean {
         val zipFile = ZipFile(file)
         val manifestEntry = zipFile.getEntry(manifestName) ?: return false
 
@@ -60,7 +65,7 @@ class ProcessOratureFile(private val file: File) {
             val manifest: Manifest = mapper.readValue(
                     zipFile.getInputStream(manifestEntry)
             )
-            manifest.dublinCore.creator == "Orature"
+            manifest.dublinCore.creator == creatorName
         } catch (ex: Exception) {
             false
         }
