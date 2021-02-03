@@ -26,7 +26,6 @@ import org.wycliffeassociates.otter.common.audio.wav.WavFile
 import org.wycliffeassociates.otter.common.audio.wav.WavMetadata
 import tornadofx.*
 import java.io.File
-import java.io.IOException
 import java.text.MessageFormat
 import java.util.regex.Pattern
 import io.reactivex.rxkotlin.toObservable as toRxObservable
@@ -113,15 +112,10 @@ class MainViewModel : ViewModel() {
             file.walk().filter { it.isFile }.forEach {
                 filesToImport.add(it)
             }
-            if (ProcessOratureFile.isOrature(file)) {
-                try {
-                    val extractedFiles = ProcessOratureFile(file).extractAudio()
-                    filesToImport.addAll(extractedFiles)
-                } catch (ex: IOException) {
-                    // TODO: emit error
-                } finally {
-                    filesToImport.remove(file)
-                }
+            if (ProcessOratureFile.isValid(file)) {
+                val extractedFiles = ProcessOratureFile(file).extractAudio()
+                filesToImport.addAll(extractedFiles)
+                filesToImport.remove(file) // not include the zip in import
             }
         }
         return filesToImport
