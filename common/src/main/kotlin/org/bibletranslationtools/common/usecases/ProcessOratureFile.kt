@@ -14,8 +14,6 @@ import java.util.zip.ZipFile
   *  @throws IOException if the file passed into constructor is not from Orature
  */
 class ProcessOratureFile(private val file: File) {
-    private val manifestName = "manifest.yaml"
-    private val creatorName = "Orature"
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private class Manifest(
@@ -30,7 +28,7 @@ class ProcessOratureFile(private val file: File) {
     )
 
     init {
-        if (!isOrature()) throw IOException("Invalid Orature file.")
+        if (!isOrature(file)) throw IOException("Invalid Orature file.")
     }
 
     fun extractAudio(): List<File> {
@@ -56,18 +54,23 @@ class ProcessOratureFile(private val file: File) {
         return tempDir.listFiles()?.toList() ?: listOf()
     }
 
-    private fun isOrature(): Boolean {
-        val zipFile = ZipFile(file)
-        val manifestEntry = zipFile.getEntry(manifestName) ?: return false
+    companion object {
+        private const val manifestName = "manifest.yaml"
+        private const val creatorName = "Orature"
 
-        return try {
-            val mapper = ObjectMapper(YAMLFactory())
-            val manifest: Manifest = mapper.readValue(
-                    zipFile.getInputStream(manifestEntry)
-            )
-            manifest.dublinCore.creator == creatorName
-        } catch (ex: Exception) {
-            false
+        fun isOrature(file: File): Boolean {
+            val zipFile = ZipFile(file)
+            val manifestEntry = zipFile.getEntry(manifestName) ?: return false
+
+            return try {
+                val mapper = ObjectMapper(YAMLFactory())
+                val manifest: Manifest = mapper.readValue(
+                        zipFile.getInputStream(manifestEntry)
+                )
+                manifest.dublinCore.creator == creatorName
+            } catch (ex: Exception) {
+                false
+            }
         }
     }
 }

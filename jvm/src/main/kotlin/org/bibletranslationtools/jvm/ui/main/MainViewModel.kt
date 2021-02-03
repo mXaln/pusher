@@ -113,7 +113,7 @@ class MainViewModel : ViewModel() {
             file.walk().filter { it.isFile }.forEach {
                 filesToImport.add(it)
             }
-            if (file.extension == "zip") {
+            if (ProcessOratureFile.isOrature(file)) {
                 try {
                     val extractedFiles = ProcessOratureFile(file).extractAudio()
                     filesToImport.addAll(extractedFiles)
