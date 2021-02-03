@@ -8,12 +8,14 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.bibletranslationtools.common.data.MediaExtension
 import java.io.File
 import java.io.IOException
+import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 /**
-  *  @throws IOException if the file passed into constructor is not from Orature
+ *  @throws IOException if the file passed into constructor is not from Orature
  */
-class ProcessOratureFile(private val file: File) {
+class ProcessOratureFile(file: File) {
+    private val zipFile: ZipFile
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     private class Manifest(
@@ -29,29 +31,33 @@ class ProcessOratureFile(private val file: File) {
 
     init {
         if (!isOrature(file)) throw IOException("Invalid Orature file.")
+        zipFile = ZipFile(file)
     }
 
     fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
-        val zipFile = ZipFile(file)
         zipFile.entries().iterator().forEach { entry ->
-            val fileEntry = File(entry.name)
-
-            if (entry.name.startsWith("content") &&
-                    fileEntry.extension == MediaExtension.WAV.toString()
+            if (
+                    entry.name.startsWith("content") &&
+                    File(entry.name).extension == MediaExtension.WAV.toString()
             ) {
-                val destFile = tempDir.resolve(fileEntry.name)
-                destFile.deleteOnExit()
-                zipFile.getInputStream(entry).buffered().use { input ->
-                    destFile.outputStream().buffered().use { output ->
-                        output.write(input.readBytes())
-                    }
-                }
+                extractEntry(entry, tempDir)
             }
         }
-        println(tempDir)
+
         return tempDir.listFiles()?.toList() ?: listOf()
+    }
+
+    private fun extractEntry(entry: ZipEntry, directory: File) {
+        val fileEntry = File(entry.name)
+        val destFile = directory.resolve(fileEntry.name).apply { deleteOnExit() }
+
+        zipFile.getInputStream(entry).buffered().use { input ->
+            destFile.outputStream().buffered().use { output ->
+                output.write(input.readBytes())
+            }
+        }
     }
 
     companion object {
