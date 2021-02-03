@@ -30,7 +30,7 @@ class ProcessOratureFile(file: File) {
     )
 
     init {
-        if (!isValid(file)) throw IOException("Invalid Orature file.")
+        if (!isOratureFormat(file)) throw IOException("Invalid Orature file.")
         zipFile = ZipFile(file)
     }
 
@@ -64,7 +64,7 @@ class ProcessOratureFile(file: File) {
         private const val manifestName = "manifest.yaml"
         private const val creatorName = "Orature"
 
-        fun isValid(file: File): Boolean {
+        fun isOratureFormat(file: File): Boolean {
             val zipFile = ZipFile(file)
             val manifestEntry = zipFile.getEntry(manifestName) ?: return false
 
