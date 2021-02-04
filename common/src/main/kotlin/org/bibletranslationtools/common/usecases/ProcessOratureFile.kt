@@ -25,10 +25,8 @@ class ProcessOratureFile(private val file: File) {
         val zipFile = ZipFile(file)
 
         zipFile.entries().iterator().forEach { entry ->
-            if (
-                    entry.name.startsWith("content") &&
-                    File(entry.name).extension == MediaExtension.WAV.toString()
-            ) {
+            val isWav = File(entry.name).extension == MediaExtension.WAV.toString()
+            if (entry.name.startsWith("content") && isWav) {
                 extractEntry(entry, zipFile, tempDir)
             }
         }
