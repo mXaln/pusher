@@ -10,12 +10,10 @@ import java.util.zip.ZipFile
 /**
  *  @throws IOException if the file passed into constructor is not from Orature
  */
-class ProcessOratureFile(file: File) {
-    private val zipFile: ZipFile
+class ProcessOratureFile(private val file: File) {
 
     init {
         if (!isOratureFormat(file)) throw IOException("Invalid Orature file.")
-        zipFile = ZipFile(file)
     }
 
     /**
@@ -24,22 +22,22 @@ class ProcessOratureFile(file: File) {
      */
     fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
+        val zipFile = ZipFile(file)
 
-        zipFile.use {
-            it.entries().iterator().forEach { entry ->
-                if (
-                        entry.name.startsWith("content") &&
-                        File(entry.name).extension == MediaExtension.WAV.toString()
-                ) {
-                    extractEntry(entry, tempDir)
-                }
+        zipFile.entries().iterator().forEach { entry ->
+            if (
+                    entry.name.startsWith("content") &&
+                    File(entry.name).extension == MediaExtension.WAV.toString()
+            ) {
+                extractEntry(entry, zipFile, tempDir)
             }
         }
+        zipFile.close()
 
         return tempDir.listFiles()?.toList() ?: listOf()
     }
 
-    private fun extractEntry(entry: ZipEntry, directory: File) {
+    private fun extractEntry(entry: ZipEntry, zipFile: ZipFile, directory: File) {
         val fileEntry = File(entry.name)
         val destFile = directory.resolve(fileEntry.name).apply { deleteOnExit() }
 
