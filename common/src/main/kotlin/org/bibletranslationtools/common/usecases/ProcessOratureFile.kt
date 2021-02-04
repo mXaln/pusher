@@ -38,8 +38,6 @@ class ProcessOratureFile(private val file: File) {
     }
 
     companion object {
-        fun isOratureFormat(file: File): Boolean {
-            return file.extension == "zip"
-        }
+        fun isOratureFormat(file: File): Boolean = file.extension == "zip"
     }
 }
