@@ -1,11 +1,7 @@
 package org.bibletranslationtools.common.usecases
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.bibletranslationtools.common.data.MediaExtension
+import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 import java.io.IOException
 import java.util.zip.ZipEntry
@@ -16,18 +12,6 @@ import java.util.zip.ZipFile
  */
 class ProcessOratureFile(file: File) {
     private val zipFile: ZipFile
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private class Manifest(
-            @JsonProperty("dublin_core")
-            var dublinCore: DublinCore
-    )
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private class DublinCore(
-            @JsonProperty("creator")
-            var creator: String
-    )
 
     init {
         if (!isOratureFormat(file)) throw IOException("Invalid Orature file.")
@@ -45,6 +29,7 @@ class ProcessOratureFile(file: File) {
                 extractEntry(entry, tempDir)
             }
         }
+        zipFile.close()
 
         return tempDir.listFiles()?.toList() ?: listOf()
     }
@@ -65,17 +50,14 @@ class ProcessOratureFile(file: File) {
         private const val creatorName = "Orature"
 
         fun isOratureFormat(file: File): Boolean {
-            val zipFile = ZipFile(file)
-            val manifestEntry = zipFile.getEntry(manifestName) ?: return false
+            if (file.extension != "zip") return false
 
-            return try {
-                val mapper = ObjectMapper(YAMLFactory())
-                val manifest: Manifest = mapper.readValue(
-                        zipFile.getInputStream(manifestEntry)
-                )
-                manifest.dublinCore.creator == creatorName
+            try {
+                ResourceContainer.load(file).use {
+                    return it.manifest.dublinCore.creator == creatorName
+                }
             } catch (ex: Exception) {
-                false
+                return false
             }
         }
     }

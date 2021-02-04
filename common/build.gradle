@@ -7,6 +7,7 @@ dependencies {
     implementation "com.github.WycliffeAssociates.ArchiveOfHolding:aoh:$aohVer"
     implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
     implementation "org.apache.tika:tika-core:$tikaVer"
+    implementation "org.wycliffeassociates:kotlin-resource-container:$kotlinRC"
 
     // Testing
     testImplementation "junit:junit:$junitVer"

@@ -27,4 +27,5 @@ ext {
     tikaVer = '1.11'
     commonsnetVer = '3.7'
     launch4j = '2.4.6'
+    kotlinRC = '0.7.0'
 }
