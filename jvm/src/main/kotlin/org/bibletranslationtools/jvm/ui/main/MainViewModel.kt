@@ -17,6 +17,7 @@ import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
 import org.bibletranslationtools.common.usecases.TransferFile
 import org.bibletranslationtools.common.usecases.ValidateFile
+import org.bibletranslationtools.common.usecases.ValidateOratureFile
 import org.bibletranslationtools.jvm.client.FtpTransferClient
 import org.bibletranslationtools.jvm.io.BooksReader
 import org.bibletranslationtools.jvm.io.LanguagesReader
@@ -26,6 +27,7 @@ import org.wycliffeassociates.otter.common.audio.wav.WavFile
 import org.wycliffeassociates.otter.common.audio.wav.WavMetadata
 import tornadofx.*
 import java.io.File
+import java.lang.Exception
 import java.text.MessageFormat
 import java.util.regex.Pattern
 import io.reactivex.rxkotlin.toObservable as toRxObservable
@@ -110,14 +112,23 @@ class MainViewModel : ViewModel() {
         files.forEach { fileOrDir ->
             fileOrDir.walk().filter { it.isFile }.forEach { file ->
                 if (ProcessOratureFile.isOratureFormat(file)) {
-                    val extractedFiles = ProcessOratureFile(file).extractAudio()
-                    filesToImport.addAll(extractedFiles)
+                    filesToImport.addAll(processOratureFile(file))
                 } else {
                     filesToImport.add(file)
                 }
             }
         }
         return filesToImport
+    }
+
+    private fun processOratureFile(file: File): List<File> {
+        return try {
+            ValidateOratureFile(file).validate()
+            ProcessOratureFile(file).extractAudio()
+        } catch (ex: Exception) {
+            emitErrorMessage(ex, file)
+            listOf()
+        }
     }
 
     private fun importFiles(files: List<File>) {

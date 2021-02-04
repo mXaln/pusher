@@ -1,20 +1,11 @@
 package org.bibletranslationtools.common.usecases
 
 import org.bibletranslationtools.common.data.MediaExtension
-import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
-import java.io.IOException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-/**
- *  @throws IOException if the file passed into constructor is not from Orature
- */
 class ProcessOratureFile(private val file: File) {
-
-    init {
-        if (!isOratureFormat(file)) throw IOException("Invalid Orature file.")
-    }
 
     /**
      * This method extracts audio files under a specific directory within the zip
@@ -47,18 +38,8 @@ class ProcessOratureFile(private val file: File) {
     }
 
     companion object {
-        private const val creatorName = "Orature"
-
         fun isOratureFormat(file: File): Boolean {
-            if (file.extension != "zip") return false
-
-            try {
-                ResourceContainer.load(file).use {
-                    return it.manifest.dublinCore.creator == creatorName
-                }
-            } catch (ex: Exception) {
-                return false
-            }
+            return file.extension == "zip"
         }
     }
 }
