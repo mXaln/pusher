@@ -107,13 +107,13 @@ class MainViewModel : ViewModel() {
 
     private fun prepareFilesToImport(files: List<File>): List<File> {
         val filesToImport = mutableListOf<File>()
-        files.forEach { file ->
-            file.walk().filter { it.isFile }.forEach { fileNode ->
-                if (ProcessOratureFile.isOratureFormat(fileNode)) {
-                    val extractedFiles = ProcessOratureFile(fileNode).extractAudio()
+        files.forEach { fileOrDir ->
+            fileOrDir.walk().filter { it.isFile }.forEach { file ->
+                if (ProcessOratureFile.isOratureFormat(file)) {
+                    val extractedFiles = ProcessOratureFile(file).extractAudio()
                     filesToImport.addAll(extractedFiles)
                 } else {
-                    filesToImport.add(fileNode)
+                    filesToImport.add(file)
                 }
             }
         }

@@ -25,12 +25,14 @@ class ProcessOratureFile(file: File) {
     fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
-        zipFile.entries().iterator().forEach { entry ->
-            if (
-                    entry.name.startsWith("content") &&
-                    File(entry.name).extension == MediaExtension.WAV.toString()
-            ) {
-                extractEntry(entry, tempDir)
+        zipFile.use {
+            it.entries().iterator().forEach { entry ->
+                if (
+                        entry.name.startsWith("content") &&
+                        File(entry.name).extension == MediaExtension.WAV.toString()
+                ) {
+                    extractEntry(entry, tempDir)
+                }
             }
         }
 
