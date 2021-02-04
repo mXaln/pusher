@@ -18,6 +18,10 @@ class ProcessOratureFile(file: File) {
         zipFile = ZipFile(file)
     }
 
+    /**
+     * This method extracts audio files under a specific directory within the zip
+     * Regard Orature resource container for more detail
+     */
     fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
@@ -29,7 +33,6 @@ class ProcessOratureFile(file: File) {
                 extractEntry(entry, tempDir)
             }
         }
-        zipFile.close()
 
         return tempDir.listFiles()?.toList() ?: listOf()
     }
@@ -46,7 +49,6 @@ class ProcessOratureFile(file: File) {
     }
 
     companion object {
-        private const val manifestName = "manifest.yaml"
         private const val creatorName = "Orature"
 
         fun isOratureFormat(file: File): Boolean {
