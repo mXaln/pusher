@@ -14,6 +14,7 @@ class ProcessOratureFile(private val file: File) {
                     ?: return listOf()
 
             content.streams.forEach { entry ->
+                // resolve chapter file name for parser compatibility
                 val normalizedFileName = File(entry.key).name.replace("_meta", "")
                 val destFile = tempDir.resolve(normalizedFileName)
                 destFile.deleteOnExit()
