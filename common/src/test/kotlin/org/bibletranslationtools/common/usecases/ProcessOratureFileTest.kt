@@ -13,7 +13,20 @@ class ProcessOratureFileTest {
     @Test
     fun testExtractAudioFiles() {
         val files = ProcessOratureFile(getOratureFile()).extractAudio()
+
         assertEquals(expectedWavFiles, files.size)
+
+        files.forEach { file ->
+            val result = ParseFileName(file).parse().test()
+
+            // imported file names should be valid for parser
+            result.assertValue {
+                it.language != null
+                it.resourceType != null
+                it.book != null
+                it.chapter != null
+            }
+        }
     }
 
     private fun getOratureFile(): File {
