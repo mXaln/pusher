@@ -110,8 +110,15 @@ class MainViewModel : ViewModel() {
         val filesToImport = mutableListOf<File>()
         files.forEach { fileOrDir ->
             fileOrDir.walk().filter { it.isFile }.forEach { file ->
-                if (ProcessOratureFile.isOratureFormat(file)) {
-                    filesToImport.addAll(processOratureFile(file))
+                if (file.extension == "zip") {
+                    when {
+                        ProcessOratureFile.isOratureFormat(file) ->
+                            filesToImport.addAll(processOratureFile(file))
+
+                        else -> emitErrorMessage(
+                                Exception("Corrupted zip file"), file
+                        )
+                    }
                 } else {
                     filesToImport.add(file)
                 }
