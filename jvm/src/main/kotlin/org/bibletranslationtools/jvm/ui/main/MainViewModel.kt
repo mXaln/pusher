@@ -17,7 +17,6 @@ import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
 import org.bibletranslationtools.common.usecases.TransferFile
 import org.bibletranslationtools.common.usecases.ValidateFile
-import org.bibletranslationtools.common.usecases.ValidateOratureFile
 import org.bibletranslationtools.jvm.client.FtpTransferClient
 import org.bibletranslationtools.jvm.io.BooksReader
 import org.bibletranslationtools.jvm.io.LanguagesReader
@@ -123,7 +122,6 @@ class MainViewModel : ViewModel() {
 
     private fun processOratureFile(file: File): List<File> {
         return try {
-            ValidateOratureFile(file).validate()
             ProcessOratureFile(file).extractAudio()
         } catch (ex: Exception) {
             emitErrorMessage(ex, file)

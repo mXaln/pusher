@@ -5,6 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
+import java.lang.Exception
 
 class ProcessOratureFileTest {
     private val oratureFileName = "orature_file.zip"
@@ -27,6 +28,14 @@ class ProcessOratureFileTest {
                 it.chapter != null
             }
         }
+    }
+
+    @Test(expected = Exception::class)
+    fun testNonOratureZipFile() {
+        val fakeZip = createTempFile(suffix = ".zip").apply { deleteOnExit() }
+
+        // this invalid file will throw an exception
+        ProcessOratureFile(fakeZip)
     }
 
     private fun getOratureFile(): File {

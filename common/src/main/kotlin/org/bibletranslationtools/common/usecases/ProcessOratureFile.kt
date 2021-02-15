@@ -4,13 +4,37 @@ import org.bibletranslationtools.common.data.MediaExtension
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 
+/**
+ *  @throws Exception if constructor @parameter file
+ *  is not a valid Orature file
+ */
 class ProcessOratureFile(private val file: File) {
+    private val creatorName = "Orature"
+    private val mediaExtension = MediaExtension.WAV.toString()
 
+    init {
+        validate()
+    }
+
+    @Throws(Exception::class)
+    private fun validate() {
+        try {
+            ResourceContainer.load(file).use {
+                if (it.manifest.dublinCore.creator != creatorName) {
+                    throw Exception()
+                }
+            }
+        } catch (ex: Exception) {
+            throw Exception("Invalid Orature file")
+        }
+    }
+
+    @Throws(Exception::class)
     fun extractAudio(): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
         ResourceContainer.load(file).use { rc ->
-            val content = rc.getProjectContent(extension=MediaExtension.WAV.toString())
+            val content = rc.getProjectContent(extension=mediaExtension)
                     ?: return listOf()
 
             content.streams.forEach { entry ->
