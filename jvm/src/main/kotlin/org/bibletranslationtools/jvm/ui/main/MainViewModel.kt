@@ -122,7 +122,8 @@ class MainViewModel : ViewModel() {
 
     private fun processOratureFile(file: File): List<File> {
         return try {
-            ProcessOratureFile(file).extractAudio()
+            val extension = MediaExtension.WAV.toString()
+            ProcessOratureFile(file).extractAudio(extension)
         } catch (ex: Exception) {
             emitErrorMessage(ex, file)
             listOf()

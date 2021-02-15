@@ -1,6 +1,5 @@
 package org.bibletranslationtools.common.usecases
 
-import org.bibletranslationtools.common.data.MediaExtension
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 
@@ -10,7 +9,6 @@ import java.io.File
  */
 class ProcessOratureFile(private val file: File) {
     private val creatorName = "Orature"
-    private val mediaExtension = MediaExtension.WAV.toString()
 
     init {
         validate()
@@ -30,11 +28,11 @@ class ProcessOratureFile(private val file: File) {
     }
 
     @Throws(Exception::class)
-    fun extractAudio(): List<File> {
+    fun extractAudio(extension: String): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
         ResourceContainer.load(file).use { rc ->
-            val content = rc.getProjectContent(extension=mediaExtension)
+            val content = rc.getProjectContent(extension=extension)
                     ?: return listOf()
 
             content.streams.forEach { entry ->

@@ -1,6 +1,6 @@
 package org.bibletranslationtools.common.usecases
 
-import org.bibletranslationtools.common.data.FileData
+import org.bibletranslationtools.common.data.MediaExtension
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
@@ -13,7 +13,8 @@ class ProcessOratureFileTest {
 
     @Test
     fun testExtractAudioFiles() {
-        val files = ProcessOratureFile(getOratureFile()).extractAudio()
+        val extension = MediaExtension.WAV.toString()
+        val files = ProcessOratureFile(getOratureFile()).extractAudio(extension)
 
         assertEquals(expectedWavFiles, files.size)
 
