@@ -1,5 +1,7 @@
 package org.bibletranslationtools.common.validators
 
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
@@ -11,7 +13,7 @@ class OratureValidatorTest {
     @Test
     fun testGoodOratureZipFile() {
         val file = getOratureFile()
-        OratureValidator(file).validate()
+        assertTrue(OratureValidator(file).isValid())
     }
 
     @Test(expected = Exception::class)
@@ -19,7 +21,7 @@ class OratureValidatorTest {
         val fakeZip = createTempFile(suffix = ".zip").apply { deleteOnExit() }
 
         // this invalid file will throw an exception
-        OratureValidator(fakeZip).validate()
+        assertFalse(OratureValidator(fakeZip).isValid())
     }
 
     private fun getOratureFile(): File {
