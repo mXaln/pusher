@@ -1,7 +1,6 @@
 package org.bibletranslationtools.common.usecases
 
 import org.bibletranslationtools.common.data.MediaExtension
-import org.bibletranslationtools.common.validators.OratureValidator
 import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
@@ -43,12 +42,5 @@ class ProcessOratureFile(private val file: File) {
         }
 
         return tempDir.listFiles()?.toList() ?: listOf()
-    }
-
-    companion object {
-        fun isOratureFormat(file: File): Boolean {
-            if (file.extension != "zip") return false
-            return OratureValidator(file).isValid()
-        }
     }
 }
