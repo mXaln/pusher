@@ -13,14 +13,14 @@ class OratureValidatorTest {
     @Test
     fun testGoodOratureZipFile() {
         val file = getOratureFile()
+
         assertTrue(OratureValidator(file).isValid())
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun testBadOratureZipFile() {
         val fakeZip = createTempFile(suffix = ".zip").apply { deleteOnExit() }
 
-        // this invalid file will throw an exception
         assertFalse(OratureValidator(fakeZip).isValid())
     }
 
