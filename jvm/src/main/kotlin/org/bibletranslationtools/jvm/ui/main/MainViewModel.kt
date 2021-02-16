@@ -12,7 +12,7 @@ import org.bibletranslationtools.common.data.Grouping
 import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.data.MediaQuality
 import org.bibletranslationtools.common.data.ResourceType
-import org.bibletranslationtools.common.usecases.ProcessOratureFile
+import org.bibletranslationtools.common.usecases.FileProcessingRouter
 import org.bibletranslationtools.common.usecases.MakePath
 import org.bibletranslationtools.common.usecases.ParseFileName
 import org.bibletranslationtools.common.usecases.TransferFile
@@ -110,31 +110,15 @@ class MainViewModel : ViewModel() {
         val filesToImport = mutableListOf<File>()
         files.forEach { fileOrDir ->
             fileOrDir.walk().filter { it.isFile }.forEach { file ->
-                if (file.extension == "zip") {
-                    when {
-                        ProcessOratureFile.isOratureFormat(file) ->
-                            filesToImport.addAll(processOratureFile(file))
-
-                        else -> emitErrorMessage(
-                                Exception("Corrupted zip file"), file
-                        )
-                    }
-                } else {
-                    filesToImport.add(file)
+                try {
+                    val processedFiles = FileProcessingRouter(file).execute()
+                    filesToImport.addAll(processedFiles)
+                } catch (ex: Exception) {
+                    emitErrorMessage(ex, file)
                 }
             }
         }
         return filesToImport
-    }
-
-    private fun processOratureFile(file: File): List<File> {
-        return try {
-            val extension = MediaExtension.WAV.toString()
-            ProcessOratureFile(file).extractAudio(extension)
-        } catch (ex: Exception) {
-            emitErrorMessage(ex, file)
-            listOf()
-        }
     }
 
     private fun importFiles(files: List<File>) {
@@ -200,7 +184,7 @@ class MainViewModel : ViewModel() {
         Alert(Alert.AlertType.INFORMATION).apply {
             title = messages["successTitle"]
             headerText = null
-            contentText = messages["uploadSuccessfull"]
+            contentText = messages["uploadSuccessful"]
 
             show()
         }

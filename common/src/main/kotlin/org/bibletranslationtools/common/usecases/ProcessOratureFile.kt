@@ -1,11 +1,24 @@
 package org.bibletranslationtools.common.usecases
 
+import org.bibletranslationtools.common.data.MediaExtension
 import org.bibletranslationtools.common.validators.OratureValidator
+import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 import java.io.IOException
 
 class ProcessOratureFile(private val file: File) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    fun process(): List<File> {
+        return try {
+            val extension = MediaExtension.WAV.toString()
+            extractAudio(extension)
+        } catch (ex: IOException) {
+            logger.error("An error occurred while extracting audio from Orature.", ex)
+            listOf()
+        }
+    }
 
     @Throws(IOException::class)
     fun extractAudio(extension: String): List<File> {
@@ -35,12 +48,7 @@ class ProcessOratureFile(private val file: File) {
     companion object {
         fun isOratureFormat(file: File): Boolean {
             if (file.extension != "zip") return false
-            return try {
-                OratureValidator(file).validate()
-                true
-            } catch (ex: Exception) {
-                false
-            }
+            return OratureValidator(file).isValid()
         }
     }
 }
