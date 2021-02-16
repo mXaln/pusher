@@ -14,7 +14,9 @@ class ProcessOratureFile(private val file: File) {
             val extension = MediaExtension.WAV.toString()
             extractAudio(extension)
         } catch (ex: IOException) {
-            logger.error("An error occurred while extracting audio from Orature.", ex)
+            logger.error(
+                    "An error occurred while extracting audio from Orature file: $file", ex
+            )
             listOf()
         }
     }
