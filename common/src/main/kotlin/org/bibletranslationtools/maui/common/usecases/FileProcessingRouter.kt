@@ -1,6 +1,6 @@
-package org.bibletranslationtools.common.usecases
+package org.bibletranslationtools.maui.common.usecases
 
-import org.bibletranslationtools.common.validators.OratureValidator
+import org.bibletranslationtools.maui.common.validators.OratureValidator
 import java.io.File
 import java.io.IOException
 

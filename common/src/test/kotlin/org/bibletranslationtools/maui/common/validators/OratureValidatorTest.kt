@@ -1,11 +1,10 @@
-package org.bibletranslationtools.common.validators
+package org.bibletranslationtools.maui.common.validators
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
-import java.lang.Exception
 
 class OratureValidatorTest {
     private val oratureFileName = "orature_file.zip"

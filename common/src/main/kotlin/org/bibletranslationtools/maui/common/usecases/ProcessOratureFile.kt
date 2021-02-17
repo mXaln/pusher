@@ -1,6 +1,6 @@
-package org.bibletranslationtools.common.usecases
+package org.bibletranslationtools.maui.common.usecases
 
-import org.bibletranslationtools.common.data.MediaExtension
+import org.bibletranslationtools.maui.common.data.MediaExtension
 import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File

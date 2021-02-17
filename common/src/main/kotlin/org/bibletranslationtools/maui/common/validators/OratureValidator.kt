@@ -1,4 +1,4 @@
-package org.bibletranslationtools.common.validators
+package org.bibletranslationtools.maui.common.validators
 
 import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
