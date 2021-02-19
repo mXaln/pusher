@@ -101,7 +101,7 @@ class MainView : View() {
 
                 setFilterChangeListeners()
 
-                viewModel.uploadObservable.subscribe {
+                viewModel.updatedObservable.subscribe {
                     if (it) {
                         reset()
                     }

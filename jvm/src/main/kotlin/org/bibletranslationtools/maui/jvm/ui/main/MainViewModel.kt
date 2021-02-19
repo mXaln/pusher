@@ -43,7 +43,7 @@ class MainViewModel : ViewModel() {
 
     val isProcessing = SimpleBooleanProperty(false)
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
-    val uploadObservable: PublishSubject<Boolean> = PublishSubject.create()
+    val updatedObservable: PublishSubject<Boolean> = PublishSubject.create()
 
     init {
         loadLanguages()
@@ -76,12 +76,13 @@ class MainViewModel : ViewModel() {
             .doFinally { isProcessing.set(false) }
             .subscribe {
                 fileDataList.removeAll(it)
-                uploadObservable.onNext(true)
+                updatedObservable.onNext(true)
                 showSuccessDialog()
             }
     }
 
     fun clear() {
+        updatedObservable.onNext(true)
         fileDataList.clear()
     }
 
