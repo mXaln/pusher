@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 import java.io.IOException
-import java.util.*
+import java.util.Queue
 
-class OratureFileProcessor(private val file: File): FileProcessor {
+class OratureFileProcessor: FileProcessor {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     override fun process(
@@ -18,7 +18,7 @@ class OratureFileProcessor(private val file: File): FileProcessor {
     ) {
         try {
             val extension = MediaExtension.WAV.toString()
-            val extractedFiles = extractAudio(extension)
+            val extractedFiles = extractAudio(file, extension)
             fileQueue.addAll(extractedFiles)
         } catch (ex: IOException) {
             logger.error(
@@ -28,7 +28,7 @@ class OratureFileProcessor(private val file: File): FileProcessor {
     }
 
     @Throws(IOException::class)
-    fun extractAudio(extension: String): List<File> {
+    fun extractAudio(file: File, extension: String): List<File> {
         val tempDir = createTempDir().apply { deleteOnExit() }
 
         ResourceContainer.load(file).use { rc ->
