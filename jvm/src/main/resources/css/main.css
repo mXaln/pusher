@@ -32,7 +32,13 @@
 }
 
 .main__upload_btn {
-    -fx-pref-width: 300px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 60px;
+    -fx-font-size: 1.4em;
+}
+
+.main__clear_btn {
+    -fx-pref-width: 200px;
     -fx-pref-height: 60px;
     -fx-font-size: 1.4em;
 }

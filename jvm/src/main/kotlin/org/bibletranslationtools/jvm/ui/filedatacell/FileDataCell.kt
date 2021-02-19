@@ -140,7 +140,6 @@ class FileDataCell(private val fileDataItem: FileDataItem) : VBox() {
                         addClass("file-data-cell__dropdown")
 
                         selectionModel.select(fileDataItem.grouping)
-                        bindSelected(fileDataItem.groupingProperty)
                         fileDataItem.groupingProperty.onChange {
                             selectionModel.select(it)
                         }

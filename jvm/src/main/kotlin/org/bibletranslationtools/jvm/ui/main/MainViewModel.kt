@@ -81,6 +81,10 @@ class MainViewModel : ViewModel() {
             }
     }
 
+    fun clear() {
+        fileDataList.clear()
+    }
+
     fun restrictedGroupings(item: FileDataItem): List<Grouping> {
         val groupings = Grouping.values().toList()
         return when {
@@ -131,6 +135,8 @@ class MainViewModel : ViewModel() {
                 fileData
                     .map { FileDataMapper().fromEntity(it) }
                     .forEach { if (!fileDataList.contains(it)) fileDataList.add(it) }
+
+                fileDataList.sort()
             }
     }
 

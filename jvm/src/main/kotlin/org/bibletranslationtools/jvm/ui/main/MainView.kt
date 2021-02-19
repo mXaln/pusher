@@ -117,9 +117,15 @@ class MainView : View() {
                 cellWidthProperty.bind(this@datagrid.widthProperty().minus(35.0))
                 maxCellsInRow = 1
 
-                cellFormat { item ->
-                    graphic = cache {
-                        filedatacell(item)
+                cellFactory = {
+                    object: DataGridCell<FileDataItem>(it) {
+                        override fun updateItem(item: FileDataItem?, empty: Boolean) {
+                            super.updateItem(item, empty)
+
+                            item?.let {
+                                graphic = filedatacell(item)
+                            }
+                        }
                     }
                 }
 
@@ -129,12 +135,24 @@ class MainView : View() {
 
             hbox {
                 addClass("main__footer")
+
+                spacing = 20.0
+
                 add(
                     JFXButton(messages["upload"]).apply {
                         addClass("btn", "btn--primary", "main__upload_btn")
 
                         setOnAction {
                             viewModel.upload()
+                        }
+                    }
+                )
+                add(
+                    JFXButton(messages["clearList"]).apply {
+                        addClass("btn", "btn--secondary", "main__clear_btn")
+
+                        setOnAction {
+                            viewModel.clear()
                         }
                     }
                 )
