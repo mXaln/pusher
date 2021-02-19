@@ -14,7 +14,7 @@ import org.bibletranslationtools.maui.common.extensions.CompressedExtensions
 import tornadofx.*
 import java.util.concurrent.Callable
 
-data class FileDataItem(val data: FileData): Comparable<FileDataItem> {
+class FileDataItem(data: FileData): Comparable<FileDataItem> {
 
     val file = data.file
 

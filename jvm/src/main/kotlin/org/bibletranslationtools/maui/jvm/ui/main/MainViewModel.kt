@@ -81,7 +81,7 @@ class MainViewModel : ViewModel() {
             }
     }
 
-    fun clear() {
+    fun clearList() {
         updatedObservable.onNext(true)
         fileDataList.clear()
     }

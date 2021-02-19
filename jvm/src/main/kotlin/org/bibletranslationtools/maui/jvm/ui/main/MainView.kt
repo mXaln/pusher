@@ -152,7 +152,7 @@ class MainView : View() {
                         addClass("btn", "btn--secondary", "main__clear_btn")
 
                         setOnAction {
-                            viewModel.clear()
+                            viewModel.clearList()
                         }
                     }
                 )
