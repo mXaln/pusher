@@ -1,23 +1,29 @@
-package org.bibletranslationtools.maui.common.usecases
+package org.bibletranslationtools.maui.common.fileprocessor
 
+import org.bibletranslationtools.maui.common.data.FileResult
 import org.bibletranslationtools.maui.common.data.MediaExtension
 import org.slf4j.LoggerFactory
 import org.wycliffeassociates.resourcecontainer.ResourceContainer
 import java.io.File
 import java.io.IOException
+import java.util.*
 
-class ProcessOratureFile(private val file: File) {
+class OratureFileProcessor(private val file: File): FileProcessor {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun process(): List<File> {
-        return try {
+    override fun process(
+            file: File,
+            fileQueue: Queue<File>,
+            resultList: MutableList<FileResult>
+    ) {
+        try {
             val extension = MediaExtension.WAV.toString()
-            extractAudio(extension)
+            val extractedFiles = extractAudio(extension)
+            fileQueue.addAll(extractedFiles)
         } catch (ex: IOException) {
             logger.error(
                     "An error occurred while extracting audio from Orature file: $file", ex
             )
-            listOf()
         }
     }
 

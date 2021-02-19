@@ -1,19 +1,20 @@
 package org.bibletranslationtools.maui.common.usecases
 
 import org.bibletranslationtools.maui.common.data.MediaExtension
+import org.bibletranslationtools.maui.common.fileprocessor.OratureFileProcessor
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
 
-class ProcessOratureFileTest {
+class OratureFileProcessorTest {
     private val oratureFileName = "orature_file.zip"
     private val expectedWavFiles = 2
 
     @Test
     fun testExtractAudioFiles() {
         val extension = MediaExtension.WAV.toString()
-        val files = ProcessOratureFile(getOratureFile()).extractAudio(extension)
+        val files = OratureFileProcessor(getOratureFile()).extractAudio(extension)
 
         assertEquals(expectedWavFiles, files.size)
 
