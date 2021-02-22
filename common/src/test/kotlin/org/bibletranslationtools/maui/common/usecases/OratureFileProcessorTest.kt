@@ -5,6 +5,7 @@ import org.bibletranslationtools.maui.common.data.FileStatus
 import org.bibletranslationtools.maui.common.data.MediaExtension
 import org.bibletranslationtools.maui.common.fileprocessor.OratureFileProcessor
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
@@ -23,15 +24,14 @@ class OratureFileProcessorTest {
         assertEquals(expectedWavFiles, files.size)
 
         files.forEach { file ->
-            val result = ParseFileName(file).parse().test()
+            val result = ParseFileName(file).parse()
+
 
             // imported file names should be valid for parser
-            result.assertValue {
-                it.language != null
-                it.resourceType != null
-                it.book != null
-                it.chapter != null
-            }
+            assertNotNull(result.language)
+            assertNotNull(result.resourceType)
+            assertNotNull(result.book)
+            assertNotNull(result.chapter)
         }
     }
 

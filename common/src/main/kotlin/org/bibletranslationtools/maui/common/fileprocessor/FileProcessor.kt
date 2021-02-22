@@ -15,6 +15,6 @@ abstract class FileProcessor {
     ): FileStatus
 
     protected fun getFileData(file: File): FileData {
-        return ParseFileName(file).read()
+        return ParseFileName(file).parse()
     }
 }
