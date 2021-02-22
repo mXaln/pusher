@@ -14,7 +14,7 @@ class OratureFileProcessorTest {
     @Test
     fun testExtractAudioFiles() {
         val extension = MediaExtension.WAV.toString()
-        val files = OratureFileProcessor(getOratureFile()).extractAudio(extension)
+        val files = OratureFileProcessor().extractAudio(getOratureFile(), extension)
 
         assertEquals(expectedWavFiles, files.size)
 

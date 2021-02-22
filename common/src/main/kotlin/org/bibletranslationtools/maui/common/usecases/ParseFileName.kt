@@ -69,6 +69,19 @@ class ParseFileName(private val file: File) {
         }
     }
 
+    fun read(): FileData {
+        return FileData(
+                file,
+                findLanguage(),
+                findResourceType(),
+                findBook(),
+                findChapter(),
+                null,
+                findQuality(),
+                findGrouping()
+        )
+    }
+
     private fun findMatch(fileName: String): Matcher? {
         val pattern = Pattern.compile(FILENAME_PATTERN, Pattern.CASE_INSENSITIVE)
         val matcher = pattern.matcher(fileName)
