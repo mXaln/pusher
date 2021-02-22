@@ -1,9 +1,9 @@
-package org.bibletranslationtools.maui.common.usecases
+package org.bibletranslationtools.maui.common.fileprocessor
 
 import org.bibletranslationtools.maui.common.data.FileResult
 import org.bibletranslationtools.maui.common.data.FileStatus
 import org.bibletranslationtools.maui.common.data.MediaExtension
-import org.bibletranslationtools.maui.common.fileprocessor.OratureFileProcessor
+import org.bibletranslationtools.maui.common.usecases.ParseFileName
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -17,8 +17,8 @@ class OratureFileProcessorTest {
 
     @Test
     fun testExtractAudioFiles() {
-        val extension = MediaExtension.WAV.toString()
         val oratureFile = getOratureFile()
+        val extension = MediaExtension.WAV.toString()
         val files = OratureFileProcessor().extractAudio(oratureFile, extension)
 
         assertEquals(expectedWavFiles, files.size)
