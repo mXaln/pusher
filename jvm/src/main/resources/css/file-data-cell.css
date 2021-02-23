@@ -23,6 +23,7 @@
 
 .file-data-cell__options .label {
     -fx-font-weight: normal;
+    -fx-text-fill: -wa-gray-dark;
 }
 
 .file-data-cell__dropdown {

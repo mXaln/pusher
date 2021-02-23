@@ -13,8 +13,8 @@
     -fx-background-insets: 20px 0 0 0;
 }
 
-.main__file-list .datagrid-cell {
-    -fx-effect: -wa-shadow2;
+.main__file-list .list-cell:filled:selected:focused, .main__file-list .list-cell:filled:selected {
+    -fx-background-color: -wa-white;
 }
 
 .main__drop-files {

@@ -15,7 +15,7 @@ class FileDataMapper : IMapper<FileData, FileDataItem> {
             type.language,
             type.resourceType,
             type.book,
-            if (!type.chapter.isNullOrBlank()) type.chapter.toInt() else null,
+            if (!type.chapter.isNullOrBlank()) type.chapter!!.toInt() else null,
             type.mediaExtension,
             type.mediaQuality,
             type.grouping

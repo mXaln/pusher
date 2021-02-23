@@ -6,7 +6,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleListProperty
-import javafx.scene.control.Alert
 import org.bibletranslationtools.maui.common.audio.BttrChunk
 import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.common.data.MediaExtension
@@ -45,6 +44,8 @@ class MainViewModel : ViewModel() {
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
     val updatedObservable: PublishSubject<Boolean> = PublishSubject.create()
 
+    val successfulUploadProperty = SimpleBooleanProperty(false)
+
     init {
         loadLanguages()
         loadBooks()
@@ -77,7 +78,7 @@ class MainViewModel : ViewModel() {
             .subscribe {
                 fileDataList.removeAll(it)
                 updatedObservable.onNext(true)
-                showSuccessDialog()
+                successfulUploadProperty.set(true)
             }
     }
 
@@ -133,9 +134,11 @@ class MainViewModel : ViewModel() {
             .buffer(Int.MAX_VALUE)
             .doFinally { isProcessing.set(false) }
             .subscribe { fileData ->
-                fileData
-                    .map { FileDataMapper().fromEntity(it) }
-                    .forEach { if (!fileDataList.contains(it)) fileDataList.add(it) }
+                fileDataList.addAll(
+                    fileData
+                        .map { FileDataMapper().fromEntity(it) }
+                        .filter { !fileDataList.contains(it) }
+                )
 
                 fileDataList.sort()
             }
@@ -178,15 +181,5 @@ class MainViewModel : ViewModel() {
     private fun emitErrorMessage(error: Throwable, file: File) {
         val notImportedText = MessageFormat.format(messages["notImported"], file.name)
         snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
-    }
-
-    private fun showSuccessDialog() {
-        Alert(Alert.AlertType.INFORMATION).apply {
-            title = messages["successTitle"]
-            headerText = null
-            contentText = messages["uploadSuccessfull"]
-
-            show()
-        }
     }
 }

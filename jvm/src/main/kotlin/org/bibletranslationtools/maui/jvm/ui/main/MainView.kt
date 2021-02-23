@@ -9,6 +9,7 @@ import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
+import javafx.scene.control.ListView
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
@@ -18,7 +19,7 @@ import org.bibletranslationtools.maui.jvm.assets.AppResources
 import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.jvm.controls.filedatafilter.filedatafilter
 import org.bibletranslationtools.maui.jvm.ui.FileDataItem
-import org.bibletranslationtools.maui.jvm.ui.filedatacell.filedatacell
+import org.bibletranslationtools.maui.jvm.ui.filedatacell.FileDataCell
 import tornadofx.*
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
@@ -27,6 +28,7 @@ class MainView : View() {
     private val viewModel: MainViewModel by inject()
 
     private val filter = filedatafilter()
+    private lateinit var listView: ListView<FileDataItem>
 
     init {
         title = messages["appName"]
@@ -37,6 +39,7 @@ class MainView : View() {
         addClass("main")
 
         createSnackBar(this)
+        createSuccessDialog()
 
         vbox {
             alignment = Pos.CENTER
@@ -110,24 +113,11 @@ class MainView : View() {
 
             add(filter)
 
-            datagrid(viewModel.fileDataList) {
+            listView = listview(viewModel.fileDataList) {
                 vgrow = Priority.ALWAYS
                 addClass("main__file-list")
 
-                cellWidthProperty.bind(this@datagrid.widthProperty().minus(35.0))
-                maxCellsInRow = 1
-
-                cellFactory = {
-                    object: DataGridCell<FileDataItem>(it) {
-                        override fun updateItem(item: FileDataItem?, empty: Boolean) {
-                            super.updateItem(item, empty)
-
-                            item?.let {
-                                graphic = filedatacell(item)
-                            }
-                        }
-                    }
-                }
+                setCellFactory { FileDataCell() }
 
                 onDragOver = onDragOverHandler()
                 onDragDropped = onDragDroppedHandler()
@@ -217,6 +207,22 @@ class MainView : View() {
         }
     }
 
+    private fun createSuccessDialog() {
+        Alert(Alert.AlertType.INFORMATION).apply {
+            title = messages["successTitle"]
+            headerText = null
+            contentText = messages["uploadSuccessfull"]
+
+            viewModel.successfulUploadProperty.onChange {
+                if (it) show() else close()
+            }
+
+            setOnCloseRequest {
+                viewModel.successfulUploadProperty.set(false)
+            }
+        }
+    }
+
     private fun setFilterChangeListeners() {
         setPropertyListener(
             filter.selectedLanguageProperty,
@@ -282,6 +288,7 @@ class MainView : View() {
 
                         if (!isGrouping || groupingAvailable) {
                             targetProp.set(fileDataItem, prop)
+                            listView.refresh()
                         }
                     }
                 }
