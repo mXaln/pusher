@@ -8,10 +8,9 @@ import org.junit.Before
 import org.junit.Test
 import java.io.File
 import java.io.FileNotFoundException
-import java.util.Queue
-import java.util.LinkedList
+import java.util.*
 
-class WavProcessorTest {
+class TrProcessorTest {
     lateinit var queue: Queue<File>
     lateinit var resultList: MutableList<FileResult>
 
@@ -29,8 +28,8 @@ class WavProcessorTest {
 
     @Test
     fun testProcessGoodFile() {
-        val file = getTestFile("en_ulb_b41_mat_c01.wav")
-        val status = WavProcessor().process(file, queue, resultList)
+        val file = getTestFile("en_ulb_mat_verse.tr")
+        val status = TrProcessor().process(file, queue, resultList)
 
         assertEquals(FileStatus.PROCESSED, status)
         assertEquals(1, resultList.size)
@@ -39,8 +38,8 @@ class WavProcessorTest {
 
     @Test
     fun testProcessBadFile() {
-        val file = getTestFile("fake.wav")
-        val status = WavProcessor().process(file, queue, resultList)
+        val file = getTestFile("fake.tr")
+        val status = TrProcessor().process(file, queue, resultList)
 
         assertEquals(FileStatus.REJECTED, status)
         assertEquals(0, resultList.size)

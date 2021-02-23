@@ -17,7 +17,7 @@ class OratureFileProcessorTest {
 
     @Test
     fun testExtractAudioFiles() {
-        val oratureFile = getOratureFile()
+        val oratureFile = getOratureFile(oratureFileName)
         val extension = MediaExtension.WAV.toString()
         val files = OratureFileProcessor().extractAudio(oratureFile, extension)
 
@@ -37,7 +37,7 @@ class OratureFileProcessorTest {
 
     @Test
     fun testProcessGoodOratureFile() {
-        val oratureFile = getOratureFile()
+        val oratureFile = getOratureFile(oratureFileName)
         val exportList = mutableListOf<FileResult>()
         val queue: Queue<File> = LinkedList<File>()
         val status = OratureFileProcessor().process(oratureFile, queue, exportList)
@@ -59,9 +59,9 @@ class OratureFileProcessorTest {
         assertEquals(0, exportList.size)
     }
 
-    private fun getOratureFile(): File {
-        val resource = javaClass.classLoader.getResource(oratureFileName)
-                ?: throw FileNotFoundException("Test resource not found: $oratureFileName")
+    private fun getOratureFile(fileName: String): File {
+        val resource = javaClass.classLoader.getResource(fileName)
+                ?: throw FileNotFoundException("Test resource not found: $fileName")
         return File(resource.path)
     }
 }
