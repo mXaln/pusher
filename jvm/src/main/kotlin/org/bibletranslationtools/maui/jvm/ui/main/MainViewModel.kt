@@ -115,25 +115,25 @@ class MainViewModel : ViewModel() {
     }
 
     private fun importFiles(files: List<File>) {
-            Observable.fromCallable {
-                fileProcessRouter.handleFiles(files)
+        Observable.fromCallable {
+            fileProcessRouter.handleFiles(files)
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOnFx()
+        .doFinally { isProcessing.set(false) }
+        .subscribe { resultList ->
+            resultList.forEach {
+                    if (it.status == FileStatus.REJECTED) {
+                        emitErrorMessage(
+                                message = "File was not recognized",
+                                fileName = it.requestedFile?.name ?: ""
+                        )
+                    } else {
+                        val item = FileDataMapper().fromEntity(it.data!!)
+                        if (!fileDataList.contains(item)) fileDataList.add(item)
+                    }
             }
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
-            .doFinally { isProcessing.set(false) }
-            .subscribe { resultList ->
-                resultList.forEach {
-                        if (it.status == FileStatus.REJECTED) {
-                            emitErrorMessage(
-                                    message = "File was not recognized",
-                                    fileName = it.requestedFile?.name ?: ""
-                            )
-                        } else {
-                            val item = FileDataMapper().fromEntity(it.data!!)
-                            if (!fileDataList.contains(item)) fileDataList.add(item)
-                        }
-                }
-            }
+        }
     }
 
     private fun loadLanguages() {
