@@ -26,7 +26,9 @@ class FileProcessingRouter(private val processors: List<FileProcessor>) {
     private fun processFile(file: File, resultList: MutableList<FileResult>) {
         processors.forEach {
             val status = it.process(file, fileQueue, resultList)
-            if (status == FileStatus.PROCESSED) return
+            if (status == FileStatus.PROCESSED) {
+                return
+            }
         }
         // file was not processed by any processor
         val rejected = FileResult(

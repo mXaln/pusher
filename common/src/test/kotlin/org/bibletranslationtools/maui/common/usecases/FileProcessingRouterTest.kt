@@ -12,7 +12,7 @@ import java.io.FileNotFoundException
 class FileProcessingRouterTest {
     private val oratureFile = "orature_file.zip" // orature file contains 2 bad wav files
     private val wavFile = "en_ulb_b41_mat_c01.wav"
-    private val badFile =  "fake.jpg"
+    private val badFile = "fake.jpg"
     private val expectedResultSize = 4
 
     @Test
