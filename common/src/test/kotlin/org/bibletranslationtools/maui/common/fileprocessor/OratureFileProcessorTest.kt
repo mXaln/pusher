@@ -36,7 +36,7 @@ class OratureFileProcessorTest {
     }
 
     @Test
-    fun testOratureProcessor() {
+    fun testProcessGoodOratureFile() {
         val oratureFile = getOratureFile()
         val exportList = mutableListOf<FileResult>()
         val queue: Queue<File> = LinkedList<File>()
@@ -44,6 +44,18 @@ class OratureFileProcessorTest {
 
         assertEquals(FileStatus.PROCESSED, status)
         assertEquals(2, queue.size)
+        assertEquals(0, exportList.size)
+    }
+
+    @Test
+    fun testProcessBadOratureFile() {
+        val anyZipFile = createTempFile(suffix = ".zip")
+        val exportList = mutableListOf<FileResult>()
+        val queue: Queue<File> = LinkedList<File>()
+        val status = OratureFileProcessor().process(anyZipFile, queue, exportList)
+
+        assertEquals(FileStatus.REJECTED, status)
+        assertEquals(0, queue.size)
         assertEquals(0, exportList.size)
     }
 
