@@ -20,7 +20,7 @@ class TrProcessor: FileProcessor() {
             null
         }
 
-        if (ext != MediaExtensions.WAV) {
+        if (ext != MediaExtensions.TR) {
             return FileStatus.REJECTED
         }
 
