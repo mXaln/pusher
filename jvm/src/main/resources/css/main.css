@@ -13,9 +13,8 @@
     -fx-background-insets: 20px 0 0 0;
 }
 
-.main__file-list .list-cell:selected {
-    -fx-background-color: transparent;
-    -fx-background: -fx-base;
+.main__file-list .list-cell:selected, .main__file-list .list-cell:even, .main__file-list .list-cell:odd {
+    -fx-background-color: -wa-white;
 }
 
 .main__drop-files {
