@@ -32,6 +32,7 @@ class MainViewModel : ViewModel() {
 
     val fileDataList = observableListOf<FileDataItem>()
     val fileDataListProperty = SimpleListProperty<FileDataItem>(fileDataList)
+    val successfulUploadProperty = SimpleBooleanProperty(false)
 
     val languages = observableListOf<String>()
     val resourceTypes = ResourceType.values().toList().toObservable()
@@ -43,8 +44,6 @@ class MainViewModel : ViewModel() {
     val isProcessing = SimpleBooleanProperty(false)
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
     val updatedObservable: PublishSubject<Boolean> = PublishSubject.create()
-
-    val successfulUploadProperty = SimpleBooleanProperty(false)
 
     private val fileProcessRouter = FileProcessingRouter.build()
 
@@ -133,7 +132,7 @@ class MainViewModel : ViewModel() {
             resultList.forEach {
                     if (it.status == FileStatus.REJECTED) {
                         emitErrorMessage(
-                                message = "File was not recognized",
+                                message = messages["fileNotRecognized"],
                                 fileName = it.requestedFile?.name ?: ""
                         )
                     } else {
@@ -141,6 +140,7 @@ class MainViewModel : ViewModel() {
                         if (!fileDataList.contains(item)) fileDataList.add(item)
                     }
             }
+            fileDataList.sort()
         }
     }
 

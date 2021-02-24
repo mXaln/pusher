@@ -29,3 +29,11 @@
 .file-data-cell__dropdown {
     -fx-max-width: infinity;
 }
+
+.file-data-cell__dropdown .list-cell:filled:selected {
+    -fx-background-color: #359ffc;
+}
+
+.file-data-cell__dropdown .list-cell:hover {
+    -fx-background-color: #2978bc;
+}
