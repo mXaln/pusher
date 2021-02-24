@@ -1,5 +1,6 @@
 package org.bibletranslationtools.maui.common.usecases
 
+import org.junit.Assert.assertEquals
 import org.bibletranslationtools.maui.common.data.FileData
 import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.common.data.MediaQuality
@@ -22,22 +23,18 @@ class ParseFileNameTest {
             null,
             null
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue(expected)
+        assertEquals(expected, result)
     }
 
     @Test
     fun parseFileNameWithInvalidInfo() {
         val file = File("test.wav")
         val expected = FileData(file)
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue(expected)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -53,11 +50,9 @@ class ParseFileNameTest {
             null,
             null
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue(expected)
+        assertEquals(expected, result)
     }
 
     @Test
@@ -73,26 +68,18 @@ class ParseFileNameTest {
             null,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue {
-            it.language == expected.language
-        }
+        assertEquals(expected.language, result.language)
     }
 
     @Test
     fun fileDataLanguageNullWithInvalidFileName() {
         val file = File("test.wav")
         val expected = FileData(file)
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue {
-            it.language == expected.language
-        }
+        assertEquals(expected.language, result.language)
     }
 
     @Test
@@ -108,13 +95,9 @@ class ParseFileNameTest {
             null,
             Grouping.CHUNK
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue {
-            it.grouping == expected.grouping
-        }
+        assertEquals(expected.grouping, result.grouping)
     }
 
     @Test
@@ -130,37 +113,27 @@ class ParseFileNameTest {
             MediaQuality.LOW,
             Grouping.VERSE
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue {
-            it.mediaQuality == expected.mediaQuality
-        }
+        assertEquals(expected.mediaQuality, result.mediaQuality)
     }
 
-    @Test
+    @Test(expected=IllegalArgumentException::class)
     fun unsupportedResourceTypeThrowsException() {
         val file = File("en_udb_gen.tr")
-        val result = ParseFileName(file).parse().test()
-
-        result.assertError(IllegalArgumentException::class.java)
-        result.assertErrorMessage("Resource type udb is not supported")
-        result.assertNotComplete()
+        ParseFileName(file).parse() // this should throw an exception
     }
 
     @Test
     fun parseFileNameLanguageResourceOnly() {
         val file = File("en_ulb.wav")
-        val fileData = FileData(
+        val expected = FileData(
             file,
             "en",
             ResourceType.ULB
         )
-        val result = ParseFileName(file).parse().test()
+        val result = ParseFileName(file).parse()
 
-        result.assertComplete()
-        result.assertNoErrors()
-        result.assertValue(fileData)
+        assertEquals(expected, result)
     }
 }

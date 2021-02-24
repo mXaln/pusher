@@ -3,9 +3,11 @@ dependencies {
     implementation "org.slf4j:slf4j-api:$slf4jApiVer"
     implementation"com.fasterxml.jackson.core:jackson-databind:$jacksonVer"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVer"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVer"
     implementation "com.github.WycliffeAssociates.ArchiveOfHolding:aoh:$aohVer"
     implementation "org.wycliffeassociates.otter.common:audio:$otterAudioVer"
     implementation "org.apache.tika:tika-core:$tikaVer"
+    implementation "org.wycliffeassociates:kotlin-resource-container:$kotlinRC"
 
     // Testing
     testImplementation "junit:junit:$junitVer"
