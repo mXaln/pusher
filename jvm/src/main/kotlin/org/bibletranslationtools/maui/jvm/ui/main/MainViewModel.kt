@@ -1,7 +1,6 @@
 package org.bibletranslationtools.maui.jvm.ui.main
 
 import com.github.thomasnield.rxkotlinfx.observeOnFx
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -9,11 +8,14 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.scene.control.Alert
 import org.bibletranslationtools.maui.common.audio.BttrChunk
-import org.bibletranslationtools.maui.common.data.*
-import org.bibletranslationtools.maui.common.fileprocessor.Mp3Processor
-import org.bibletranslationtools.maui.common.fileprocessor.OratureFileProcessor
-import org.bibletranslationtools.maui.common.fileprocessor.WavProcessor
-import org.bibletranslationtools.maui.common.usecases.*
+import org.bibletranslationtools.maui.common.data.FileStatus
+import org.bibletranslationtools.maui.common.data.MediaExtension
+import org.bibletranslationtools.maui.common.data.MediaQuality
+import org.bibletranslationtools.maui.common.data.Grouping
+import org.bibletranslationtools.maui.common.data.ResourceType
+import org.bibletranslationtools.maui.common.usecases.FileProcessingRouter
+import org.bibletranslationtools.maui.common.usecases.MakePath
+import org.bibletranslationtools.maui.common.usecases.TransferFile
 import org.bibletranslationtools.maui.jvm.client.FtpTransferClient
 import org.bibletranslationtools.maui.jvm.io.BooksReader
 import org.bibletranslationtools.maui.jvm.io.LanguagesReader
