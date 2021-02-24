@@ -15,6 +15,7 @@ enum class MediaExtensions(vararg val ext: String) {
                 it.name == ext.toUpperCase() || it.ext.contains(ext)
             }
 
+        @Throws(java.lang.IllegalArgumentException::class)
         fun of(ext: String) =
             values().singleOrNull {
                 it.name == ext.toUpperCase() || it.ext.contains(ext.toLowerCase())

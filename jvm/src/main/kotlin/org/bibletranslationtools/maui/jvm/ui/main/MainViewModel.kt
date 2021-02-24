@@ -8,14 +8,14 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.scene.control.Alert
 import org.bibletranslationtools.maui.common.audio.BttrChunk
-import org.bibletranslationtools.maui.common.data.Grouping
+import org.bibletranslationtools.maui.common.data.FileStatus
 import org.bibletranslationtools.maui.common.data.MediaExtension
 import org.bibletranslationtools.maui.common.data.MediaQuality
+import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.common.data.ResourceType
+import org.bibletranslationtools.maui.common.usecases.FileProcessingRouter
 import org.bibletranslationtools.maui.common.usecases.MakePath
-import org.bibletranslationtools.maui.common.usecases.ParseFileName
 import org.bibletranslationtools.maui.common.usecases.TransferFile
-import org.bibletranslationtools.maui.common.usecases.ValidateFile
 import org.bibletranslationtools.maui.jvm.client.FtpTransferClient
 import org.bibletranslationtools.maui.jvm.io.BooksReader
 import org.bibletranslationtools.maui.jvm.io.LanguagesReader
@@ -44,6 +44,8 @@ class MainViewModel : ViewModel() {
     val isProcessing = SimpleBooleanProperty(false)
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
     val uploadObservable: PublishSubject<Boolean> = PublishSubject.create()
+
+    private val fileProcessRouter = FileProcessingRouter.build()
 
     init {
         loadLanguages()
@@ -115,23 +117,25 @@ class MainViewModel : ViewModel() {
     }
 
     private fun importFiles(files: List<File>) {
-        files.toRxObservable()
-            .concatMap { file ->
-                ValidateFile(file).validate()
-                    .andThen(ParseFileName(file).parse())
-                    .toObservable()
-                    .doOnError { emitErrorMessage(it, file) }
-                    .onErrorResumeNext(Observable.empty())
+        Observable.fromCallable {
+            fileProcessRouter.handleFiles(files)
+        }
+        .subscribeOn(Schedulers.io())
+        .observeOnFx()
+        .doFinally { isProcessing.set(false) }
+        .subscribe { resultList ->
+            resultList.forEach {
+                    if (it.status == FileStatus.REJECTED) {
+                        emitErrorMessage(
+                                message = "File was not recognized",
+                                fileName = it.requestedFile?.name ?: ""
+                        )
+                    } else {
+                        val item = FileDataMapper().fromEntity(it.data!!)
+                        if (!fileDataList.contains(item)) fileDataList.add(item)
+                    }
             }
-            .subscribeOn(Schedulers.io())
-            .observeOnFx()
-            .buffer(Int.MAX_VALUE)
-            .doFinally { isProcessing.set(false) }
-            .subscribe { fileData ->
-                fileData
-                    .map { FileDataMapper().fromEntity(it) }
-                    .forEach { if (!fileDataList.contains(it)) fileDataList.add(it) }
-            }
+        }
     }
 
     private fun loadLanguages() {
@@ -171,6 +175,11 @@ class MainViewModel : ViewModel() {
     private fun emitErrorMessage(error: Throwable, file: File) {
         val notImportedText = MessageFormat.format(messages["notImported"], file.name)
         snackBarObservable.onNext("$notImportedText ${error.message ?: ""}")
+    }
+
+    private fun emitErrorMessage(message: String, fileName: String) {
+        val notImportedText = MessageFormat.format(messages["notImported"], fileName)
+        snackBarObservable.onNext("$notImportedText $message")
     }
 
     private fun showSuccessDialog() {
