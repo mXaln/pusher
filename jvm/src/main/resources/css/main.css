@@ -13,8 +13,10 @@
     -fx-background-insets: 20px 0 0 0;
 }
 
-.main__file-list .datagrid-cell {
-    -fx-effect: -wa-shadow2;
+.main__file-list .list-cell:selected,
+.main__file-list .list-cell:even,
+.main__file-list .list-cell:odd {
+    -fx-background-color: -wa-white;
 }
 
 .main__drop-files {
@@ -32,7 +34,13 @@
 }
 
 .main__upload_btn {
-    -fx-pref-width: 300px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 60px;
+    -fx-font-size: 1.4em;
+}
+
+.main__clear_btn {
+    -fx-pref-width: 200px;
     -fx-pref-height: 60px;
     -fx-font-size: 1.4em;
 }

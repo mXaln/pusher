@@ -14,7 +14,7 @@ import org.bibletranslationtools.maui.common.extensions.CompressedExtensions
 import tornadofx.*
 import java.util.concurrent.Callable
 
-class FileDataItem(data: FileData) {
+data class FileDataItem(private val data: FileData): Comparable<FileDataItem> {
 
     val file = data.file
 
@@ -24,27 +24,27 @@ class FileDataItem(data: FileData) {
 
     val initResourceType = data.resourceType
     val resourceTypeProperty = SimpleObjectProperty<ResourceType>(initResourceType)
-    var resourceType by resourceTypeProperty
+    var resourceType: ResourceType? by resourceTypeProperty
 
     val initBook = data.book
     val bookProperty = SimpleStringProperty(initBook)
-    var book by bookProperty
+    var book: String? by bookProperty
 
     val initChapter = data.chapter?.toString()
     val chapterProperty = SimpleStringProperty(initChapter)
-    var chapter by chapterProperty
+    var chapter: String? by chapterProperty
 
     val initMediaExtension = data.mediaExtension
     val mediaExtensionProperty = SimpleObjectProperty<MediaExtension>(initMediaExtension)
-    var mediaExtension by mediaExtensionProperty
+    var mediaExtension: MediaExtension? by mediaExtensionProperty
 
     val initMediaQuality = data.mediaQuality
     val mediaQualityProperty = SimpleObjectProperty<MediaQuality>(initMediaQuality)
-    var mediaQuality by mediaQualityProperty
+    var mediaQuality: MediaQuality? by mediaQualityProperty
 
     val initGrouping = data.grouping
     val groupingProperty = SimpleObjectProperty<Grouping>(initGrouping)
-    var grouping by groupingProperty
+    var grouping: Grouping? by groupingProperty
 
     val isContainerProperty = SimpleBooleanProperty(data.isContainer)
     val isContainer by isContainerProperty
@@ -69,11 +69,7 @@ class FileDataItem(data: FileData) {
             mediaExtensionProperty
         )
 
-    override fun equals(other: Any?): Boolean {
-        return (other as? FileDataItem)?.let {
-            it.file == this.file
-        } ?: false
+    override fun compareTo(other: FileDataItem): Int {
+        return FileDataItemComparator().compare(this, other)
     }
-
-    override fun hashCode() = file.hashCode()
 }

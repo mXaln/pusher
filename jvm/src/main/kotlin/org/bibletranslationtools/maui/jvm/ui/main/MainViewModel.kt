@@ -6,7 +6,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleListProperty
-import javafx.scene.control.Alert
 import org.bibletranslationtools.maui.common.audio.BttrChunk
 import org.bibletranslationtools.maui.common.data.FileStatus
 import org.bibletranslationtools.maui.common.data.MediaExtension
@@ -33,6 +32,7 @@ class MainViewModel : ViewModel() {
 
     val fileDataList = observableListOf<FileDataItem>()
     val fileDataListProperty = SimpleListProperty<FileDataItem>(fileDataList)
+    val successfulUploadProperty = SimpleBooleanProperty(false)
 
     val languages = observableListOf<String>()
     val resourceTypes = ResourceType.values().toList().toObservable()
@@ -43,7 +43,7 @@ class MainViewModel : ViewModel() {
 
     val isProcessing = SimpleBooleanProperty(false)
     val snackBarObservable: PublishSubject<String> = PublishSubject.create()
-    val uploadObservable: PublishSubject<Boolean> = PublishSubject.create()
+    val updatedObservable: PublishSubject<Boolean> = PublishSubject.create()
 
     private val fileProcessRouter = FileProcessingRouter.build()
 
@@ -78,9 +78,14 @@ class MainViewModel : ViewModel() {
             .doFinally { isProcessing.set(false) }
             .subscribe {
                 fileDataList.removeAll(it)
-                uploadObservable.onNext(true)
-                showSuccessDialog()
+                updatedObservable.onNext(true)
+                successfulUploadProperty.set(true)
             }
+    }
+
+    fun clearList() {
+        updatedObservable.onNext(true)
+        fileDataList.clear()
     }
 
     fun restrictedGroupings(item: FileDataItem): List<Grouping> {
@@ -127,7 +132,7 @@ class MainViewModel : ViewModel() {
             resultList.forEach {
                     if (it.status == FileStatus.REJECTED) {
                         emitErrorMessage(
-                                message = "File was not recognized",
+                                message = messages["fileNotRecognized"],
                                 fileName = it.requestedFile?.name ?: ""
                         )
                     } else {
@@ -135,6 +140,7 @@ class MainViewModel : ViewModel() {
                         if (!fileDataList.contains(item)) fileDataList.add(item)
                     }
             }
+            fileDataList.sort()
         }
     }
 
@@ -180,15 +186,5 @@ class MainViewModel : ViewModel() {
     private fun emitErrorMessage(message: String, fileName: String) {
         val notImportedText = MessageFormat.format(messages["notImported"], fileName)
         snackBarObservable.onNext("$notImportedText $message")
-    }
-
-    private fun showSuccessDialog() {
-        Alert(Alert.AlertType.INFORMATION).apply {
-            title = messages["successTitle"]
-            headerText = null
-            contentText = messages["uploadSuccessfull"]
-
-            show()
-        }
     }
 }

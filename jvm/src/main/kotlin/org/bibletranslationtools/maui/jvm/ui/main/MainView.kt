@@ -9,6 +9,7 @@ import javafx.event.EventHandler
 import javafx.geometry.Pos
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
+import javafx.scene.control.ListView
 import javafx.scene.input.DragEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.Pane
@@ -18,7 +19,7 @@ import org.bibletranslationtools.maui.jvm.assets.AppResources
 import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.jvm.controls.filedatafilter.filedatafilter
 import org.bibletranslationtools.maui.jvm.ui.FileDataItem
-import org.bibletranslationtools.maui.jvm.ui.filedatacell.filedatacell
+import org.bibletranslationtools.maui.jvm.ui.filedatacell.FileDataCell
 import tornadofx.*
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
@@ -27,6 +28,7 @@ class MainView : View() {
     private val viewModel: MainViewModel by inject()
 
     private val filter = filedatafilter()
+    private lateinit var listView: ListView<FileDataItem>
 
     init {
         title = messages["appName"]
@@ -37,6 +39,7 @@ class MainView : View() {
         addClass("main")
 
         createSnackBar(this)
+        createSuccessDialog()
 
         vbox {
             alignment = Pos.CENTER
@@ -101,7 +104,7 @@ class MainView : View() {
 
                 setFilterChangeListeners()
 
-                viewModel.uploadObservable.subscribe {
+                viewModel.updatedObservable.subscribe {
                     if (it) {
                         reset()
                     }
@@ -110,18 +113,11 @@ class MainView : View() {
 
             add(filter)
 
-            datagrid(viewModel.fileDataList) {
+            listView = listview(viewModel.fileDataList) {
                 vgrow = Priority.ALWAYS
                 addClass("main__file-list")
 
-                cellWidthProperty.bind(this@datagrid.widthProperty().minus(35.0))
-                maxCellsInRow = 1
-
-                cellFormat { item ->
-                    graphic = cache {
-                        filedatacell(item)
-                    }
-                }
+                setCellFactory { FileDataCell() }
 
                 onDragOver = onDragOverHandler()
                 onDragDropped = onDragDroppedHandler()
@@ -129,12 +125,24 @@ class MainView : View() {
 
             hbox {
                 addClass("main__footer")
+
+                spacing = 20.0
+
                 add(
                     JFXButton(messages["upload"]).apply {
                         addClass("btn", "btn--primary", "main__upload_btn")
 
                         setOnAction {
                             viewModel.upload()
+                        }
+                    }
+                )
+                add(
+                    JFXButton(messages["clearList"]).apply {
+                        addClass("btn", "btn--secondary", "main__clear_btn")
+
+                        setOnAction {
+                            viewModel.clearList()
                         }
                     }
                 )
@@ -195,6 +203,22 @@ class MainView : View() {
             when (result.get()) {
                 yesButton -> op.invoke(true)
                 noButton -> op.invoke(false)
+            }
+        }
+    }
+
+    private fun createSuccessDialog() {
+        Alert(Alert.AlertType.INFORMATION).apply {
+            title = messages["successTitle"]
+            headerText = null
+            contentText = messages["uploadSuccessfull"]
+
+            viewModel.successfulUploadProperty.onChange {
+                if (it) show() else close()
+            }
+
+            setOnCloseRequest {
+                viewModel.successfulUploadProperty.set(false)
             }
         }
     }
@@ -264,6 +288,7 @@ class MainView : View() {
 
                         if (!isGrouping || groupingAvailable) {
                             targetProp.set(fileDataItem, prop)
+                            listView.refresh()
                         }
                     }
                 }
