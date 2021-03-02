@@ -1,10 +1,11 @@
 package org.bibletranslationtools.maui.common.usecases
 
-import io.reactivex.Single
 import org.bibletranslationtools.maui.common.data.FileData
 import org.bibletranslationtools.maui.common.data.Grouping
 import org.bibletranslationtools.maui.common.data.MediaQuality
 import org.bibletranslationtools.maui.common.data.ResourceType
+import org.bibletranslationtools.maui.common.extensions.ContainerExtensions
+import org.bibletranslationtools.maui.common.extensions.MediaExtensions
 import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -111,7 +112,9 @@ class ParseFileName(private val file: File) {
                 _matcher.group(GROUPS.GROUPING.value) != null ->
                     Grouping.of(_matcher.group(GROUPS.GROUPING.value))
                 _matcher.group(GROUPS.LAST_VERSE.value) != null ->
-                    Grouping.of("chunk")
+                    Grouping.CHUNK
+                isChapterNonContainer(_matcher) ->
+                    Grouping.CHAPTER
                 else -> null
             }
         }
@@ -124,5 +127,12 @@ class ParseFileName(private val file: File) {
                 MediaQuality.of(it)
             }
         }
+    }
+
+    private fun isChapterNonContainer(matcher: Matcher): Boolean {
+        val mediaExtension = MediaExtensions.of(file.extension).norm
+        return matcher.group(GROUPS.CHAPTER.value).isNullOrBlank().not()
+                && matcher.group(GROUPS.FIRST_VERSE.value).isNullOrBlank()
+                && ContainerExtensions.isSupported(mediaExtension).not()
     }
 }

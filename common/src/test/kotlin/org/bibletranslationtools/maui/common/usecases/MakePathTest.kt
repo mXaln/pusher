@@ -131,6 +131,27 @@ class MakePathTest {
     }
 
     @Test
+    fun testNormalizeFilename() {
+        val expected = "en/ulb/gen/1/CONTENTS/mp3/hi/chapter/en_ulb_gen_c1.mp3"
+        val fileData = FileData(
+            File("test.mp3"),
+            "en",
+            ResourceType.ULB,
+            "gen",
+            1,
+            null,
+            MediaQuality.HI,
+            Grouping.CHAPTER
+        )
+
+        val result = MakePath(fileData).build().test()
+
+        result.assertComplete()
+        result.assertNoErrors()
+        result.assertValue(expected)
+    }
+
+    @Test
     fun testNonContainerWithMediaExtensionThrowsException() {
         val fileData = FileData(
             File("en_ulb_gen.mp3"),
